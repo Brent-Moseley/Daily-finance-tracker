@@ -1,0 +1,59 @@
+<!-- public/index.html -->
+<!-- View this at:  http://localhost:8080/#/   once server started with 'npm start' -->
+<!-- http://code.tutsplus.com/tutorials/testing-in-nodejs--net-35018 -->
+<!-- http://attackofzach.com/setting-up-a-project-using-karma-with-mocha-and-chai/ -->
+<!-- http://attackofzach.com/tdd-bdd-mean-part1/ -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <base href="/">
+
+  <title>Starter Node and Angular App</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css"> <!-- custom styles -->
+  <link rel="stylesheet" href="libs/foundation/css/foundation.css">
+  <link rel="stylesheet" href="libs/foundation/css/normalize.css">
+  <!-- http://foundation.zurb.com/docs/ -->
+  <!-- http://zurb.com/responsive/design -->
+  <!-- http://www.codeheaps.com/web-design/zurb-foundation-5-creating-responsive-blog-layout/ -->
+
+  <!-- JS -->
+  <script src="http://code.jquery.com/jquery-latest.min.js"
+          type="text/javascript"></script>
+  <script src="libs/angular/angular.min.js"></script>
+  <script src="libs/angular-route/angular-route.min.js"></script>
+  <script src="libs/modernizr/modernizr.js"></script>
+  <script src="libs/underscore/underscore-min.js"></script>
+
+  <!-- ANGULAR CUSTOM -->
+  <script src="js/app.js"></script>
+  <script src="controllers/MainCtrl.js"></script>
+  <script src="controllers/ItemCtrl.js"></script>
+  <script src="services/ItemService.js"></script>
+  <script src="directives/note-popup.js"></script>
+  <script src="js/appRoutes.js"></script>
+  <script src="libs/foundation/js/foundation.min.js"></script>
+</head>
+<body ng-app="sampleApp" ng-controller="MainController">
+  <div class="panel content">
+
+    <!-- HEADER -->
+    <nav>
+      <div>
+        <a href="/">Home: 2D Task List - create your task list and notes on a multi-level list</a>
+      </div>
+
+      <!-- LINK TO OUR PAGES. ANGULAR HANDLES THE ROUTING HERE -->
+      <ul>
+        <li><a href="/#/items">Tasks</a></li>    <!-- # indicates to get route within Angular, NOT the Node server -->
+      </ul>
+    </nav>
+
+    <!-- ANGULAR DYNAMIC CONTENT -->
+    <div ng-view></div>
+
+  </div>
+</body>
+</html>
