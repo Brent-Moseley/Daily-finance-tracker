@@ -2,44 +2,43 @@
 
 <div class="panel content large-8 medium-10 small-12 small-centered large-centered radius" 
      style="padding: 0.75rem;">
-  <h1>All Items:</h1>
+  <h1>Recent Expense History:</h1>
   <p>{{ tagline }}</p>
 
   <!-- {{items}} -->
   <table>
-    <th width="320">Task</th>
-    <th width="100">Size</th>   <!--  Stone / Rock / Sand -->
-    <th width="100">Status</th>   <!-- Open / Started / Done -->
-    <th width="50">Notes</th>
+    <th width="100">Date</th>
+    <th width="100">Category</th> 
+    <th width="100">Cost</th>
+    <th width="350">Notes</th>
     <th width="50">Remove</th>
-    <tr ng-repeat="item in items">
-      <td>{{item.name}}</td>
+    <tr ng-repeat="item in items track by $index">
+      <!-- <td>{{item.date}}</td> -->
       <td>
-        <select ng-model="item.size" ng-change="update(item._id, item)">
-          <option>Rock</option>
-          <option>Pebble</option>
-          <option>Sand</option>
-        </select>
+        <input id="calendar" type="text" ng-model="item.date" ui-date="dateOptions"/> 
       </td>
       <td>
-        <select ng-model="item.status" ng-change="update(item._id, item)">
-          <option>Open</option>
-          <option>Started</option>
-          <option>Done</option>
+        <select ng-model="item.category" ng-change="update(item._id, item)">
+          <option ng-repeat="option in categories">{{option}}</option>
         </select>
-      </td>      
-      <td class="text-center" ng-if="item.notes.length > 0"><a href="" ng-click="viewNotes(item.name, item.notes)">View</a></td>
-      <td class="text-center" ng-if="item.notes.length == 0"><a href="" ng-click="viewNotes(item.name, item.notes)">Add</a></td>
+      </td>
+      <td>{{item.cost}}</td>
+      <td>
+        <input type="text" ng-model="item.note" ng-change="updateNote(item._id, $index)" class="line-input">
+      </td>
+
+<!--       <td class="text-center" ng-if="item.notes.length > 0"><a href="" ng-click="viewNotes(item.name, item.notes)">View</a></td>
+      <td class="text-center" ng-if="item.notes.length == 0"><a href="" ng-click="viewNotes(item.name, item.notes)">Add</a></td> -->
       <td class="text-center"><a href="" ng-click="remove(item._id)">X</a></td>
     </tr>
   </table>
   <br>
-  Add a new row:<br>
+  Add a new expense (enter dollar value, then add details above):<br>
   <div class="row">
     <div class="large-10 columns">
       <div class="row collapse">
         <div class="small-10 medium-8 large-8 columns">
-          <input type="text" placeholder="New item" ng-model="newOne">
+          <input type="text" placeholder="New cost" ng-model="newOne">
         </div>
         <div class="small-2 medium-4 large-4 columns">
           <a ng-click="addOne(newOne)"class="button postfix">Add</a>
@@ -47,5 +46,5 @@
       </div>
     </div>
   </div>  
-  <note-popup></note-popup>
+  <!-- <note-popup></note-popup> -->
 </div>

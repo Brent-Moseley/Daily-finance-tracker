@@ -1,8 +1,9 @@
 // public/js/services/ItemService.js
-app.factory('itemService', ['$http', function($http, $q) {
+app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
     // the $q service gives you promises in an Angular app:  
     //   https://docs.angularjs.org/api/ng/service/$q
     //   Promises are just another way to do callbacks, via chaining.
+    //   Celebrate!!
     return {
       // call to get all items
       get : function() {
@@ -10,6 +11,13 @@ app.factory('itemService', ['$http', function($http, $q) {
         return $http.get('/api/items')
           .then(function(response) {
             if (typeof response.data === 'object') {
+              angular.forEach (response.data, function (item) {
+                // convert each date to a Date object
+                //debugger;
+                item.date = $filter('date')(item.date.substring(0, 10), 'MM/dd/yyyy', 'UTC');
+
+                //item.date = new Date(item.date);
+              });
               return response.data;
             } else {
               // invalid response
@@ -24,12 +32,13 @@ app.factory('itemService', ['$http', function($http, $q) {
 
 
         // call to POST and create a new item
-        create : function(itemData) {
+        create : function(itemData, expenseDate) {
           console.log ('in create');
+          console.log (expenseDate);
           // Note this is only creating a new item (line) which
           //  will then be updated in real time when the user changes
           //  drop down options, adds a note, etc. 
-          var data = JSON.stringify ({name: itemData});
+          var data = JSON.stringify ({'cost': itemData, 'date': expenseDate});
           return $http.post('/api/items', data);
         },
 

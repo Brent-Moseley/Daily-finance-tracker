@@ -34,6 +34,14 @@ th, td {
   display: inline-block;
 }
 
+#calendar {
+  margin: 0;
+}
+
+td .line-input {
+  margin: 0 !important;
+}
+
 #item button {
   display: inline-block;
 }

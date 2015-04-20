@@ -1,2 +1,2 @@
 // public/js/app.js
-var app = angular.module('sampleApp', ['ngRoute']);
+var app = angular.module('sampleApp', ['ngRoute', 'ui.date']);   // ???

@@ -9,12 +9,13 @@
   <meta charset="UTF-8">
   <base href="/">
 
-  <title>Starter Node and Angular App</title>
+  <title>Daily Financial Tracker</title>
 
   <!-- CSS -->
   <link rel="stylesheet" href="css/style.css"> <!-- custom styles -->
   <link rel="stylesheet" href="libs/foundation/css/foundation.css">
   <link rel="stylesheet" href="libs/foundation/css/normalize.css">
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" type="text/css">
   <!-- http://foundation.zurb.com/docs/ -->
   <!-- http://zurb.com/responsive/design -->
   <!-- http://www.codeheaps.com/web-design/zurb-foundation-5-creating-responsive-blog-layout/ -->
@@ -24,8 +25,13 @@
           type="text/javascript"></script>
   <script src="libs/angular/angular.min.js"></script>
   <script src="libs/angular-route/angular-route.min.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
   <script src="libs/modernizr/modernizr.js"></script>
   <script src="libs/underscore/underscore-min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
+  <script>
+      moment().format();
+  </script>
 
   <!-- ANGULAR CUSTOM -->
   <script src="js/app.js"></script>
@@ -33,6 +39,7 @@
   <script src="controllers/ItemCtrl.js"></script>
   <script src="services/ItemService.js"></script>
   <script src="directives/note-popup.js"></script>
+  <script src="directives/date-picker.js"></script>
   <script src="js/appRoutes.js"></script>
   <script src="libs/foundation/js/foundation.min.js"></script>
 </head>
@@ -42,12 +49,12 @@
     <!-- HEADER -->
     <nav>
       <div>
-        <a href="/">Home: 2D Task List - create your task list and notes on a multi-level list</a>
+        <a href="/">Home: Daily Financial Tracker</a>
       </div>
 
       <!-- LINK TO OUR PAGES. ANGULAR HANDLES THE ROUTING HERE -->
       <ul>
-        <li><a href="/#/items">Tasks</a></li>    <!-- # indicates to get route within Angular, NOT the Node server -->
+        <li><a href="/#/items">Expense History</a></li>    <!-- # indicates to get route within Angular, NOT the Node server -->
       </ul>
     </nav>
 

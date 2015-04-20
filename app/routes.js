@@ -15,7 +15,7 @@ var Item = require('./models/item');
         app.get('/api/items', function(req, res) {
           // use mongoose to get all items in the database
           console.log ('Request for all items');
-          Item.find().sort('size').exec(function(err, items) {
+          Item.find().sort('date').exec(function(err, items) {
             // if there is an error retrieving, send the error. 
                             // nothing after res.send(err) will execute
             if (err)
@@ -30,11 +30,10 @@ var Item = require('./models/item');
         app.post('/api/items', function(req, res) {    // note post vs create
           var next = new Item(req.body);
 
-          next.notes.push({text : 'Test A'});
-          next.notes.push({text : 'Test B'});
+          //next.notes.push({text : 'Test A'});
+          //next.notes.push({text : 'Test B'});
 
           console.log ('create new:');
-          console.log ('notes is:');
           console.log (next.notes);
           next.save(function (err) {
             if (err) { console.error(err); res.send('ERROR posting'); }

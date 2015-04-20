@@ -1,21 +1,23 @@
 // public/js/controllers/ItemCtrl.js
-app.controller('ItemController', function($scope, itemService) {
-
-  $scope.tagline = 'Here are your items:';
+app.controller('ItemController', function($scope, itemService, $timeout) {
+  $scope.tagline = 'Enter your daily expenses as you go about your day.';
+  $scope.categories = ['Auto', 'Bills', 'Career', 'Cloths', 'Dates', 'Debt', 'Education', 'Fun', 'Gas', 'Giving','Grocery', 'Home', 'Medical', 'Misc','Restaurant','Savings' ];
+           
+  $scope.dateOptions = {
+      // options:  http://api.jqueryui.com/datepicker/#option-minDate
+      // minDate: 0,
+      // maxDate: "+4M",
+      // buttonImage: "datepicker.gif",
+      //buttonImageOnly: true,
+      showOn: "focus"
+  };
 
   $scope.getAll = function() {
     itemService.get()
       .then(function(data) {
           // promise fulfilled
           if (data) {
-            //  Start using lodash instead of underscore.js
-            var rocks = _.where(data, {size: 'Rock'});
-            var pebbles = _.where(data, {size: 'Pebble'});
-            var sand = _.where(data, {size: 'Sand'});
-            var none = _.where(data, {size: ''}); 
-            var arranged = rocks.concat(pebbles, sand, none);   
-
-            $scope.items = arranged;
+            $scope.items = data;
             console.log ('data read:');
             console.log (data);
           }
@@ -29,7 +31,8 @@ app.controller('ItemController', function($scope, itemService) {
   
   $scope.addOne = function (newOne) {
   	console.log ('in add One');
-    itemService.create (newOne)
+    //console.log (moment().format("MM-DD-YYYY"));
+    itemService.create (newOne, moment().format("MM-DD-YYYY"))
       .then(function(data) {
         $scope.getAll();
       }, function(err) {
@@ -49,6 +52,18 @@ app.controller('ItemController', function($scope, itemService) {
       });
   }
 
+  $scope.timerUpdateNote = false;
+  $scope.updateNote = function (id, index) {
+    if ($scope.timerUpdateNote == false) {
+      console.log ('Scheduling');
+      $scope.timerUpdateNote = true;
+      // schedule a save for data due to note field edits
+      $timeout( function() {$scope.update (id, $scope.items[index]); $scope.timerUpdateNote = false;}, 3000);
+
+    }
+    else console.log ('Not yet');
+  }
+
   $scope.update = function (id, data) {
     console.log ('request to update: ' + id);
     console.log (data);
@@ -64,13 +79,13 @@ app.controller('ItemController', function($scope, itemService) {
       });
   }
 
-  $scope.currentNotes = [];
-  $scope.currentName = '';
-  $scope.viewNotes = function (name, notes) {
-    $scope.currentNotes = notes;
-    $scope.currentName = name;
-    $('#modalNotes').foundation('reveal', 'open');
-  }
+  // $scope.currentNotes = [];
+  // $scope.currentName = '';
+  // $scope.viewNotes = function (name, notes) {
+  //   $scope.currentNotes = notes;
+  //   $scope.currentName = name;
+  //   $('#modalNotes').foundation('reveal', 'open');
+  // }
 
   $scope.getAll();  // Show items when viewing first time
 
