@@ -57,8 +57,9 @@ app.controller('ItemController', function($scope, itemService, $timeout) {
     if ($scope.timerUpdateNote == false) {
       console.log ('Scheduling');
       $scope.timerUpdateNote = true;
-      // schedule a save for data due to note field edits
-      $timeout( function() {$scope.update (id, $scope.items[index]); $scope.timerUpdateNote = false;}, 3000);
+      // schedule a save for data due to note field edits, saves on constantly hitting server for updates
+      // on every key stroke
+      $timeout( function() {$scope.update (id, $scope.items[index]); $scope.timerUpdateNote = false;}, 1000);
 
     }
     else console.log ('Not yet');
