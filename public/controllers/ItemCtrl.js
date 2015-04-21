@@ -2,6 +2,7 @@
 app.controller('ItemController', function($scope, itemService, $timeout) {
   $scope.tagline = 'Enter your daily expenses as you go about your day.';
   $scope.categories = ['Auto', 'Bills', 'Career', 'Cloths', 'Dates', 'Debt', 'Education', 'Fun', 'Gas', 'Giving','Grocery', 'Home', 'Medical', 'Misc','Restaurant','Savings' ];
+  $scope.key = 'demo';   // Default security key, simple authentication to put in the header of all API requests
            
   $scope.dateOptions = {
       // options:  http://api.jqueryui.com/datepicker/#option-minDate
@@ -91,3 +92,5 @@ app.controller('ItemController', function($scope, itemService, $timeout) {
   $scope.getAll();  // Show items when viewing first time
 
 });
+
+//  Get in the zone, fast flow coding like spoken communication!!

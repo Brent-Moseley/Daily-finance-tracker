@@ -1,6 +1,6 @@
 // public/js/controllers/MainCtrl.js
 app.controller('MainController', function($scope) {
 
-    $scope.tagline = 'In Main controller';   
+    $scope.tagline = 'Enter your security key below, or "demo" to see sample data.';   
 
 });
