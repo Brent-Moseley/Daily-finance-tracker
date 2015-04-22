@@ -6,7 +6,11 @@
     <p>{{ tagline }}</p>
 
     Security Key:
-    <input type="text" />
-    <button type="submit" ng-click="login()">Log in</button>
+    <input type="text" style="width: 120px;" ng-model="key" />
+    <button type="submit" ng-click="login(key)">Log in</button>
+    <button type="submit" ng-click="generateKey()">Create a New Key</button>
+    <br>(Clicking 'Create' will generate a NEW account)
+
+    <br>Disclaimer:
 
 </div>

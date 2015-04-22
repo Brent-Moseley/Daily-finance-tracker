@@ -1,9 +1,9 @@
 // public/js/controllers/ItemCtrl.js
-app.controller('ItemController', function($scope, itemService, $timeout) {
+app.controller('ItemController', function($scope, itemService, keyService, $timeout) {
   $scope.tagline = 'Enter your daily expenses as you go about your day.';
   $scope.categories = ['Auto', 'Bills', 'Career', 'Cloths', 'Dates', 'Debt', 'Education', 'Fun', 'Gas', 'Giving','Grocery', 'Home', 'Medical', 'Misc','Restaurant','Savings' ];
-  $scope.key = 'demo';   // Default security key, simple authentication to put in the header of all API requests
-           
+  $scope.key = keyService.get();
+  console.log ('In item controller now, ' + $scope.key);
   $scope.dateOptions = {
       // options:  http://api.jqueryui.com/datepicker/#option-minDate
       // minDate: 0,
@@ -14,7 +14,7 @@ app.controller('ItemController', function($scope, itemService, $timeout) {
   };
 
   $scope.getAll = function() {
-    itemService.get()
+    itemService.get($scope.key)
       .then(function(data) {
           // promise fulfilled
           if (data) {
@@ -33,7 +33,7 @@ app.controller('ItemController', function($scope, itemService, $timeout) {
   $scope.addOne = function (newOne) {
   	console.log ('in add One');
     //console.log (moment().format("MM-DD-YYYY"));
-    itemService.create (newOne, moment().format("MM-DD-YYYY"))
+    itemService.create (newOne, moment().format("MM-DD-YYYY"), $scope.key)
       .then(function(data) {
         $scope.getAll();
       }, function(err) {
@@ -44,7 +44,7 @@ app.controller('ItemController', function($scope, itemService, $timeout) {
 
   $scope.remove = function (id) {
     console.log ('removing: ' + id);
-    itemService.delete (id)
+    itemService.delete (id, $scope.key)
       .then(function(data) {
         $scope.getAll();
       }, function(err) {
@@ -72,7 +72,7 @@ app.controller('ItemController', function($scope, itemService, $timeout) {
     // Use angular.copy helper method below to create a deep copy of the
     //   data item before updating, we are going to remove the
     //   row version and a couple other properties from it first.
-    itemService.update (id, angular.copy(data))
+    itemService.update (id, angular.copy(data), $scope.key)
       .then(function(data) {
         console.log ('Update completed');
       }, function(err) {

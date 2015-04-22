@@ -52,8 +52,7 @@ angular.module('ui.date', [])
             element.blur();
             scope.$apply(function() {
               showing = false;
-              // Temp fix for first row drawing incorrectly after date update
-              // Find the real solution to this very weird bug later!
+              // Re-load the table, since is sorted by date and dates have changed.
               $timeout( function(){ $route.reload(); }, 100);
             });
           };

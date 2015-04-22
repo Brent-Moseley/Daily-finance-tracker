@@ -4,11 +4,25 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
     //   https://docs.angularjs.org/api/ng/service/$q
     //   Promises are just another way to do callbacks, via chaining.
     //   Celebrate!!
+    //
+    //   Setting up HTTP headers:  https://docs.angularjs.org/api/ng/service/$http
+    // $http({
+    //             method: method,
+    //             url: url,
+    //             data: data
+    //         })
+    // Mongoose queries:  http://adrianmejia.com/blog/2014/10/01/creating-a-restful-api-tutorial-with-nodejs-and-mongodb/
+
     return {
       // call to get all items
-      get : function() {
-        console.log ('in get');
-        return $http.get('/api/items')
+      get : function(key) {
+        console.log ('in get: ' + key);
+        return $http({
+          method: 'GET',
+          url: '/api/items',
+          headers: {'key': key}
+        })
+        //.get('/api/items')
           .then(function(response) {
             if (typeof response.data === 'object') {
               angular.forEach (response.data, function (item) {
@@ -32,18 +46,24 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
 
 
         // call to POST and create a new item
-        create : function(itemData, expenseDate) {
-          console.log ('in create');
+        create : function(itemData, expenseDate, key) {
+          console.log ('in create: ' + key);
           console.log (expenseDate);
           // Note this is only creating a new item (line) which
           //  will then be updated in real time when the user changes
           //  drop down options, adds a note, etc. 
           var data = JSON.stringify ({'cost': itemData, 'date': expenseDate});
-          return $http.post('/api/items', data);
+          return $http({
+            method: 'POST',
+            url: '/api/items',
+            data: data,
+            headers: {'key': key}
+          });
+          //$http.post('/api/items', data);
         },
 
         // call to UPDATE an item
-        update : function(id, data) {
+        update : function(id, data, key) {
           console.log (' in service update:');
           // the data that comes in is a modification of the original
           // item object that was loaded.  Delete what should not be sent
@@ -53,13 +73,15 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
           delete data['$$hashKey'];
           console.log (data);
           //return $http.update('/api/items/&id=' + id);
+          // Demonstrates the proper way to do this with the key in the header, though
+          // this is not technically necessary here since we are updating by ID
           return $http({
             url: '/api/items/&id=' + id,
             method: "PUT",
             data: {
               'data': data
             },
-            headers: {'Content-Type':'application/json'}
+            headers: {'Content-Type':'application/json', 'key': key}
           }).success(function (data, status, headers, config) {
             console.log ('Successful Update:');
             console.log ('  Data:');
@@ -78,9 +100,16 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
         },        
 
         // call to DELETE an item
-        delete : function(id) {
+        delete : function(id, key) {
           console.log (' in service delete');
-          return $http.delete('/api/items/&id=' + id);
+          // Demonstrates the proper way to do this with the key in the header, though
+          // this is not technically necessary here since we are deleted by ID
+          return $http({
+            url: '/api/items/&id=' + id,
+            method: "DELETE",
+            headers: {'key': key}
+          });
+          //return $http.delete('/api/items/&id=' + id);
         }
     }       
 
