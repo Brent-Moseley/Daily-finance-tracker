@@ -4,6 +4,7 @@ app.controller('MainController', function($scope, keyService, $location) {
   $scope.tagline = 'Enter your security key below, or "demo" to see sample data.';
   console.log ('Resetting the key');
   $scope.login = function (key) {
+    if (!$scope.agree) return;
     console.log ('setting key: ' + key);
     keyService.save(key); 
     $location.url('/items');  // redundant if called from the home page, but just in case is used elsewhere
@@ -14,7 +15,8 @@ app.controller('MainController', function($scope, keyService, $location) {
   }
 
   $scope.generateKey = function () {
-    var GUID = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    if (!$scope.agree) return;
+    var GUID = 'xxxx-9xxx-Zxxx'.replace(/[xy]/g, function(c) {
       var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
       return v.toString(16);
     });
@@ -29,3 +31,6 @@ app.controller('MainController', function($scope, keyService, $location) {
   keyService.save ('demo');  // Default security key, simple authentication to put in the header of all API requests
 
 });
+
+// Creating an export button:
+// http://stackoverflow.com/questions/16514509/how-do-you-serve-a-file-for-download-with-angularjs-or-javascript

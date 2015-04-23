@@ -3,8 +3,8 @@
 <div class="panel content large-8 medium-10 small-12 small-centered large-centered radius" 
      style="padding: 0.75rem;">
   <h1>Recent Expense History:</h1>
-  <p>{{ tagline }}</p>
-  <p>You are using key: {{key}}</p>
+  <p>{{ tagline }}<br>
+  You are using key: {{key}}</p>
 
   <table>
     <th width="120">Date</th>
@@ -32,6 +32,25 @@
       <td class="text-center"><a href="" ng-click="remove(item._id)">X</a></td>
     </tr>
   </table>
+  <div class="row">
+    <div class="small-2 medium-2 large-2 columns">
+      Page Total:
+    </div>
+    <div class="small-2 medium-2 large-2 columns">
+      {{viewTotal | currency}} 
+    </div>
+    <div class="small-3 medium-3 large-3 columns">
+      Category Total:
+    </div>
+    <div class="small-3 medium-3 large-3 columns">
+      <select ng-model="selectedCat" ng-change="calculateCatTotal(selectedCat)">
+        <option ng-repeat="option in categories">{{option}}</option>
+      </select>
+    </div>
+    <div class="small-2 medium-2 large-2 columns">
+      {{catTotal | currency}}
+    </div>    
+  </div>             
   <br>
   Add a new expense (enter dollar value, then add details above):<br>
   <div class="row">

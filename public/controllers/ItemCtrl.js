@@ -2,6 +2,8 @@
 app.controller('ItemController', function($scope, itemService, keyService, $timeout) {
   $scope.tagline = 'Enter your daily expenses as you go about your day.';
   $scope.categories = ['Auto', 'Bills', 'Career', 'Cloths', 'Dates', 'Debt', 'Education', 'Fun', 'Gas', 'Giving','Grocery', 'Home', 'Medical', 'Misc','Restaurant','Savings' ];
+  $scope.viewTotal = $scope.catTotal = 0;
+  $scope.selectedCat = 'none';
   $scope.key = keyService.get();
   console.log ('In item controller now, ' + $scope.key);
   $scope.dateOptions = {
@@ -21,6 +23,11 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
             $scope.items = data;
             console.log ('data read:');
             console.log (data);
+            var total = 0;
+            angular.forEach (data, function (item) {
+              total += (parseFloat(item.cost) * 100);
+            });
+            $scope.viewTotal = total / 100;
           }
           $scope.newOne = '';
       }, function(err) {
@@ -36,6 +43,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     itemService.create (newOne, moment().format("MM-DD-YYYY"), $scope.key)
       .then(function(data) {
         $scope.getAll();
+        $scope.calculateCatTotal($scope.selectedCat);
       }, function(err) {
         console.log (' Error in add One');
         console.log(err); // Error: "It broke"
@@ -47,6 +55,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     itemService.delete (id, $scope.key)
       .then(function(data) {
         $scope.getAll();
+        $scope.calculateCatTotal($scope.selectedCat);
       }, function(err) {
         console.log (' Error in remove');
         console.log(err); // Error: "It broke"
@@ -75,10 +84,19 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     itemService.update (id, angular.copy(data), $scope.key)
       .then(function(data) {
         console.log ('Update completed');
+        $scope.calculateCatTotal($scope.selectedCat);
       }, function(err) {
         console.log (' Error in update');
         console.log(err); // Error: "It broke"
       });
+  }
+
+  $scope.calculateCatTotal = function (selectedCat) {
+    var total = 0;
+    angular.forEach ($scope.items, function (item) {
+      if (item.category == selectedCat) total += (parseFloat(item.cost) * 100);
+    });
+    $scope.catTotal = total / 100;
   }
 
   // $scope.currentNotes = [];

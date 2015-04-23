@@ -1,16 +1,48 @@
 <!-- public/views/home.html -->
+<!--   Foundation grid layout:  http://foundation.zurb.com/grid-2.html
+ --><div>
+    <h1>Daily Financial Tracker Login Page</h1>
 
-<div>
-    <h1>Home Page</h1>
+    <p>
+      A no-charge tool for tracking your daily finances, setting budget limits, and generating reports.<br>
+      {{ tagline }}
+    </p>
 
-    <p>{{ tagline }}</p>
+    <div class="row">
+      <div class="small-10 medium-10 large-10 columns">
+        <div class="row">
+          <div class="small-6 medium-6 large-6 columns">
+            <input type="text" placeholder="Security Key" ng-model="key">
+          </div>
+          <div class="small-3 medium-3 large-3 columns" >
+            <a ng-disabled="!agree" ng-click="login(key);"class="button postfix">Log In</a>
+          </div>
+          <div class="small-3 medium-3 large-3 columns" >
+            <a ng-disabled="!agree" ng-click="generateKey();"class="button postfix">Create a New Key</a>
+          </div>          
+        </div>
+        NOTE: Clicking 'Create' will generate a NEW account.
+      </div>
+    </div> 
 
-    Security Key:
-    <input type="text" style="width: 120px;" ng-model="key" />
-    <button type="submit" ng-click="login(key)">Log in</button>
-    <button type="submit" ng-click="generateKey()">Create a New Key</button>
-    <br>(Clicking 'Create' will generate a NEW account)
+    <div class="row">
+      <div class="large-10 columns">
+        <div class="row">
+          <div class="small-2 medium-1 large-1 columns">
+            <input type="checkbox" ng-model="agree">
+          </div>
+          <div class="small-10 medium-11 large-11 columns">
+            I acknowledge and agree to the terms of use below:
+          </div>          
+        </div>
+      </div>
+    </div>     
+<!--     <input type="text" style="width: 120px;" ng-model="key" />
+    <button type="submit" class="button postfix" ng-click="login(key)">Log in</button>
+    <button type="submit" class="button postfix" ng-click="generateKey()">Create a New Key</button>
+ -->
 
-    <br>Disclaimer:
+    <br><strong>Disclaimer:</strong><br>
+    Daily Financial Tracker web app is a no-charge tool for anyone to use to help keep track of and optimize their daily finances.  Note that this is NOT a professional budgeting program, accounting package, or tax program.  It is provided as-is for your free use.  The intent of this app is to keep your data anonymous by providing you with a generated security key that you will enter in to access your data. This key is only secure as far as you avoid giving it out to others. Please keep your data anonymous by NOT entering in any personally identifying information, such as full names, addresses, account numbers, etc. An export button is provided so you can backup your data to your local drive and / or import into excel or an accounting package (csv format). Backing up is highly recommended at least every month.
 
 </div>
