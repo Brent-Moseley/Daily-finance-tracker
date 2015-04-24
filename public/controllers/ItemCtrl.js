@@ -100,8 +100,9 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     // Put the date filter parameters on the parent scope, since the reload is going
     // to reset this controller.
     $scope.$parent.dateFilterEnabled = true;
-    $scope.$parent.startDate = startDate;
-    $scope.$parent.endDate = endDate;
+    $scope.$parent.startDate = $scope.$parent.viewStartDate = startDate;
+    $scope.$parent.endDate = $scope.$parent.viewEndDate = endDate;
+
     $timeout( function(){ $route.reload(); }, 100);
   }
 

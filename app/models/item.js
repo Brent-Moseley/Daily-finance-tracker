@@ -3,7 +3,9 @@
 var mongoose = require('mongoose');
 console.log (' Connecting....');   // Make sure database is created and 
                                   // mongo db is running in a terminal: mongod
-mongoose.connect('mongodb://localhost/daily-financial-tracker');  // NOTE:  may create for you if does not exist.
+// TEST DB   mongoose.connect('mongodb://localhost/daily-financial-tracker');  // NOTE:  may create for you if does not exist.
+mongoose.connect('mongodb://root:root@proximus.modulusmongo.net:27017/exIbeb2e');   // PROD
+
 
 // Imagine doing something big like Payment Manager / Organization Mgr / Session Mgr!!
 //  I have worked on some very big projects! 

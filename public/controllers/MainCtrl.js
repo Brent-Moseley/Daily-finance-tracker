@@ -2,6 +2,8 @@
 app.controller('MainController', function($scope, keyService, $location) {
 
   $scope.tagline = 'Enter your security key below, or "demo" to see sample data.';
+  $scope.viewStartDate = 'none';
+  $scope.viewEndDate = 'none';
   console.log ('Resetting the key');
   $scope.login = function (key) {
     if (!$scope.agree) return;
