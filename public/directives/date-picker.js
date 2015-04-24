@@ -18,6 +18,8 @@ angular.module('ui.date', [])
     require:'?ngModel',
     restrict: 'A',
     link:function (scope, element, attrs, controller) {
+      //debugger;
+      var grid = attrs.grid;
 
       if (!controller) return;
 
@@ -39,10 +41,15 @@ angular.module('ui.date', [])
             scope.$apply(function() {
               showing = true;
               // Change to format for DB after modifying
-              dd = new Date(element.datepicker("getDate"));
-              datestr = (dd.getMonth() + 1) + '/' + dd.getDate() + '/' + dd.getFullYear();
-              scope.items[scope.editing].date = datestr;
-              scope.$parent.update(scope.items[scope.editing]._id , scope.items[scope.editing]);
+              var dd = new Date(element.datepicker("getDate"));
+              var datestr = (dd.getMonth() + 1) + '/' + dd.getDate() + '/' + dd.getFullYear();
+              if (grid) {
+                scope.items[scope.editing].date = datestr;
+                scope.$parent.update(scope.items[scope.editing]._id , scope.items[scope.editing]);
+              }
+              else {
+                scope[attrs.ngModel] = datestr;
+              }
             });
           };
           opts.beforeShow = function() {
@@ -53,7 +60,7 @@ angular.module('ui.date', [])
             scope.$apply(function() {
               showing = false;
               // Re-load the table, since is sorted by date and dates have changed.
-              $timeout( function(){ $route.reload(); }, 100);
+              if (grid) $timeout( function(){ $route.reload(); }, 100);
             });
           };
           element.on('blur', function() {

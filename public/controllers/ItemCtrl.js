@@ -1,22 +1,27 @@
 // public/js/controllers/ItemCtrl.js
-app.controller('ItemController', function($scope, itemService, keyService, $timeout) {
+app.controller('ItemController', function($scope, itemService, keyService, $timeout, $route) {
   $scope.tagline = 'Enter your daily expenses as you go about your day.';
   $scope.categories = ['Auto', 'Bills', 'Career', 'Cloths', 'Dates', 'Debt', 'Education', 'Fun', 'Gas', 'Giving','Grocery', 'Home', 'Medical', 'Misc','Restaurant','Savings' ];
   $scope.viewTotal = $scope.catTotal = 0;
   $scope.selectedCat = 'none';
+  //$scope.dateFilterEnabled = false;
+  //$scope.startDate = '';
+  //$scope.endDate = '';
   $scope.key = keyService.get();
   console.log ('In item controller now, ' + $scope.key);
   $scope.dateOptions = {
-      // options:  http://api.jqueryui.com/datepicker/#option-minDate
+      // options -  http://api.jqueryui.com/datepicker/#option-minDate
       // minDate: 0,
       // maxDate: "+4M",
       // buttonImage: "datepicker.gif",
       //buttonImageOnly: true,
       showOn: "focus"
   };
+  //  Weekly date picker:  http://www.tikalk.com/incubator/week-picker-using-jquery-ui-datepicker/
 
   $scope.getAll = function() {
-    itemService.get($scope.key)
+    debugger;
+    itemService.get($scope.key, $scope.dateFilterEnabled, $scope.startDate, $scope.endDate)
       .then(function(data) {
           // promise fulfilled
           if (data) {
@@ -89,6 +94,15 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
         console.log (' Error in update');
         console.log(err); // Error: "It broke"
       });
+  }
+
+  $scope.dateFilter = function (startDate, endDate) {
+    // Put the date filter parameters on the parent scope, since the reload is going
+    // to reset this controller.
+    $scope.$parent.dateFilterEnabled = true;
+    $scope.$parent.startDate = startDate;
+    $scope.$parent.endDate = endDate;
+    $timeout( function(){ $route.reload(); }, 100);
   }
 
   $scope.calculateCatTotal = function (selectedCat) {

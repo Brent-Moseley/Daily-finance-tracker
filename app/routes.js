@@ -3,6 +3,8 @@
  // good doc:  https://www.packtpub.com/books/content/understanding-express-routes
  // This is the routes for the Express middleware, on the back end.  Everything in app
  // is the Express / Mongo / Node backend.  Everything in public is the Angular front end.
+ // Identity.  Deep love - I love coding, I love design and architecture!  And I love 
+ //   all the rewards of doing it!
 var Item = require('./models/item');
 
     module.exports = function(app) {
@@ -19,26 +21,40 @@ var Item = require('./models/item');
           console.log ('Request for all items:');
           console.log (req.headers);
           console.log (req.headers.key);
-          Item.find({'key': req.headers.key}).sort('date').exec(function(err, items) {
-            //  .find({'key': req.headers.key})
-            // .where('key').in([req.headers.key, ''])
-            // if there is an error retrieving, send the error. 
-                            // nothing after res.send(err) will execute
+          console.log ('query:');
+          if (!req.query.start_date || !req.query.end_date)
+            Item.find({'key': req.headers.key}).sort('date').exec(function(err, items) {
+              if (err)
+                  res.send(err);
+
+              else res.json(items); // return all items in JSON format
+            });
+          else {
+            start = req.query.start_date.replace(/-/g, '/');
+            end = req.query.end_date.replace(/-/g, '/');
+            console.log (start);
+            console.log (end);            
+            //Item.find({'key': req.headers.key}, 'date': {$gte: ISODate(start), $lte: ISODate(end)}})
+            var queryString = "this.date >= new Date('" + start + "') && this.date <= new Date('" + end + "')";
+            console.log ('Query string: ' + queryString);
+            Item.find({'key': req.headers.key, $where: queryString })
+              .sort('date').exec(function(err, items) {
+
+            // http://docs.mongodb.org/manual/tutorial/query-documents/
+            // http://docs.mongodb.org/manual/reference/operator/query/where/
+            // http://mongoosejs.com/docs/queries.html
             if (err)
                 res.send(err);
 
-            res.json(items); // return all items in JSON format
-          });
-          // http://mongoosejs.com/docs/queries.html
+            else res.json(items); // return all items in JSON format
+            });
+          }            
         });
 
         // route to handle creating goes here (app.post)
         app.post('/api/items', function(req, res) {    // note post vs create
           req.body.key = req.headers.key;
           var next = new Item(req.body);
-
-          //next.notes.push({text : 'Test A'});
-          //next.notes.push({text : 'Test B'});
 
           console.log ('create new:');
           console.log (req.header);

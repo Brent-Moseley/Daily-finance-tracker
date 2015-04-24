@@ -15,11 +15,17 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
 
     return {
       // call to get all items
-      get : function(key) {
+      get : function(key, dateFilter, startDate, endDate) {
+        // http://stackoverflow.com/questions/4024271/rest-api-best-practices-where-to-put-parameters
         console.log ('in get: ' + key);
+        var query = '';
+        if (dateFilter)
+          query = 'start_date=' + startDate.replace(/\//g, "-") +
+                  '&end_date=' + endDate.replace(/\//g, "-");
+        debugger;
         return $http({
           method: 'GET',
-          url: '/api/items',
+          url: '/api/items?' + query,
           headers: {'key': key}
         })
         //.get('/api/items')

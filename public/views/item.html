@@ -6,6 +6,26 @@
   <p>{{ tagline }}<br>
   You are using key: {{key}}</p>
 
+  <input type="checkbox" ng-model="showDateRange" /> Filter by Date Range
+  <div id="show-block" ng-show="showDateRange">
+    <div class="row">
+      <div class="small-2 medium-2 large-2 columns">
+        Start Date:
+      </div>
+      <div class="small-2 medium-2 large-2 columns">
+        <input class="calendar" type="text" ng-model="startDate" ui-date="dateOptions"/>
+      </div>
+      <div class="small-2 medium-2 large-2 columns">
+        End Date:
+      </div>
+      <div class="small-2 medium-2 large-2 columns">
+        <input class="calendar" type="text" ng-model="endDate" ui-date="dateOptions"/>
+      </div>
+      <div class="small-2 medium-2 large-2 columns">
+        <a ng-click="dateFilter(startDate, endDate)" class="button postfix show">Show</a>
+      </div>
+    </div>
+  </div>
   <table>
     <th width="120">Date</th>
     <th width="100">Category</th> 
@@ -15,7 +35,7 @@
     <tr ng-repeat="item in items track by $index">
       <!-- <td>{{item.date}}</td> -->
       <td>
-        <input id="calendar" type="text" ng-model="item.date" ui-date="dateOptions"/> 
+        <input class="calendar" type="text" ng-model="item.date" ui-date="dateOptions" grid="true"/> 
       </td>
       <td>
         <select ng-model="item.category" ng-change="update(item._id, item)">
