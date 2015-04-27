@@ -1,32 +1,33 @@
 // public/js/services/key-service.js
-app.factory('keyService', function() {
+app.factory('keyService', ['$http', '$q', function($http, $q) {
   var key = '';
+  var login = '';
   return {
-    // call to get all items
-    save : function(newKey) {
+    saveKey : function(newKey) {
       key = newKey;
     },
 
-    get : function () {
+    getKey : function () {
       return key;
     },
+
+    saveLogin : function(newLogin) {
+      login = newLogin;
+    },
+
+    getLogin : function () {
+      return login;
+    },    
 
     confirmUserUnique : function (userName, callback) {
       return $http({
         method: 'GET',
-        url: '/api/users?' + userName
+        url: '/api/users?user_name=' + userName
       })
-      //.get('/api/items')
         .then(function(response) {
-          if (typeof response.data === 'object') {
-            angular.forEach (response.data, function (item) {
-              // convert each date to a Date object
-              //debugger;
-              item.date = $filter('date')(item.date.substring(0, 10), 'MM/dd/yyyy', 'UTC');
-
-              //item.date = new Date(item.date);
-            });
-            return response.data;
+          if (typeof response.data === 'string') {
+            debugger;
+            callback(response.data);
           } else {
             // invalid response
             return $q.reject(response.data);
@@ -38,8 +39,55 @@ app.factory('keyService', function() {
           });      
     },
 
-    createAccount : function (userName, userPwd, key, callback) {
+    login : function (userName, pwd, callback) {
+      return $http({
+        method: 'GET',
+        url: '/api/users?user_name=' + userName,
+        headers: {'pwd': pwd}     // put the password in the header for security reasons
+      })
+        .then(function(response) {
+          if (response) {
+            // returns the user ID / key if successful
+            debugger;
+            if (typeof response.data === 'string' || typeof response.data === 'object')
+              callback(response.data);
+          } else {
+            // invalid response
+            return $q.reject(response.data);
+          }
 
+          }, function(response) {
+            // something went wrong
+            return $q.reject(response.data);
+          });      
+    },    
+
+    createAccount : function (userName, userPwd, key, callback) {
+      console.log ('in user create: ' + userName);
+      var data = JSON.stringify ({
+        'userName': userName, 
+        'pwd': userPwd,
+        'key': key
+      });
+      return $http({
+        method: 'POST',
+        url: '/api/users',
+        data: data
+        //headers: {'key': key}
+      })
+        .then(function(response) {
+          if (typeof response.data != undefined) {
+            debugger;
+            callback(response.data);
+          } else {
+            // invalid response
+            return $q.reject(response.data);
+          }
+
+          }, function(response) {
+            // something went wrong
+            return $q.reject(response.data);
+          });                
     }
   };
-});
+}]);

@@ -107,38 +107,44 @@ var User = require('./models/user');
         // login is allowed, otherwise returns empty string. This key is then used in
         // all further web service calls for getting and retrieving items, etc.
         app.get('/api/users', function(req, res) {
-          // use mongoose to get all items in the database
-          console.log ('Request for all items:');
-          console.log (req.headers);
-          console.log (req.headers.key);
-          console.log ('query:');
-          if (!req.query.start_date || !req.query.end_date)
-            Item.find({'key': req.headers.key}).sort('date').exec(function(err, items) {
-              if (err)
-                  res.send(err);
+          console.log ('Checking user:');
+          var userName = req.query.user_name;
+          var pwd = req.headers.pwd;
+          var key = '';
+          console.log (userName + ' ' + pwd);
+          if (!pwd)
+            //  Did not specify a pwd, so assume just checking existence of user
+            User.find({'userName': userName}).exec(function(err, user) {
+              console.log ('Found this:' + user);
+              if (err || user.length == 0)
+                  res.send("false");
 
-              else res.json(items); // return all items in JSON format
+              else res.json("true"); // return all items in JSON format
             });
           else {
-            start = req.query.start_date.replace(/-/g, '/');
-            end = req.query.end_date.replace(/-/g, '/');
-            console.log (start);
-            console.log (end);            
-            //Item.find({'key': req.headers.key}, 'date': {$gte: ISODate(start), $lte: ISODate(end)}})
-            var queryString = "this.date >= new Date('" + start + "') && this.date <= new Date('" + end + "')";
-            console.log ('Query string: ' + queryString);
-            Item.find({'key': req.headers.key, $where: queryString })
-              .sort('date').exec(function(err, items) {
+            User.find({'userName': userName}).exec(function(err, user) {
+              console.log ('Trying to log in, Found this:' + user);
+              console.log ('Checking against pwd: ' + pwd);
+              console.log (user[0].pwd);
+              console.log ('err:' + err);
+              if (err || !user || user[0].pwd != pwd) {
+                console.log ('Failed login');
+                res.send("false");   // unable to log in
+              }
+              else {
+                console.log ('OK, so sending key:' + user[0].key);
+                res.json(user[0].key); // log successful, return the key
+              }
+            });
 
             // http://docs.mongodb.org/manual/tutorial/query-documents/
             // http://docs.mongodb.org/manual/reference/operator/query/where/
             // http://mongoosejs.com/docs/queries.html
-            if (err)
-                res.send(err);
+            // if (err)
+            //     res.send(err);
 
-            else res.json(items); // return all items in JSON format
-            });
-          }            
+            // else res.json(items); // return all items in JSON format
+          };
         });
 
         // A post to users will create a new user account, given a user name, password,
@@ -148,15 +154,14 @@ var User = require('./models/user');
         // desired at some point, just make the password a long GUID so it is almost 
         // impossible to log in.
         app.post('/api/users', function(req, res) {    // note post vs create
-          req.body.key = req.headers.key;
-          var next = new Item(req.body);
-
-          console.log ('create new:');
-          console.log (req.header);
+          //req.body.key = req.headers.key;
+          console.log ('Creating new user: ');
           console.log (req.body);
+          var next = new User(req.body);
+
           next.save(function (err) {
             if (err) { console.error(err); res.send('ERROR posting'); }
-            else { console.log ('Successful add'); res.send('/ POST OK'); }
+            else { console.log ('Successful user add'); res.send('/ POST OK'); }
           });
         });
         // frontend routes =========================================================

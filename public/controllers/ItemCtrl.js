@@ -7,7 +7,8 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   //$scope.dateFilterEnabled = false;
   //$scope.startDate = '';
   //$scope.endDate = '';
-  $scope.key = keyService.get();
+  $scope.key = keyService.getKey();
+  $scope.login = keyService.getLogin();
   console.log ('In item controller now, ' + $scope.key);
   $scope.dateOptions = {
       // options -  http://api.jqueryui.com/datepicker/#option-minDate
@@ -33,6 +34,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
               total += (parseFloat(item.cost) * 100);
             });
             $scope.viewTotal = total / 100;
+            $scope.login = keyService.getLogin();
           }
           $scope.newOne = '';
       }, function(err) {

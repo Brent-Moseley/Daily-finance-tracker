@@ -11,11 +11,14 @@
     <div class="row">
       <div class="small-10 medium-10 large-10 columns">
         <div class="row">
-          <div class="small-6 medium-6 large-6 columns">
-            <input type="text" placeholder="Security Key" ng-model="key">
+          <div class="small-3 medium-3 large-3 columns">
+            <input type="text" placeholder="User Name" ng-model="userName">
           </div>
+          <div class="small-3 medium-3 large-3 columns">
+            <input type="password" placeholder="Password" ng-model="pwd">
+          </div>          
           <div class="small-3 medium-3 large-3 columns" >
-            <a ng-disabled="!agree" ng-click="login(key);"class="button postfix">Log In</a>
+            <a ng-disabled="!agree" ng-click="login(userName, pwd);"class="button postfix">Log In</a>
           </div>
           <div class="small-3 medium-3 large-3 columns" >
             <a ng-disabled="!agree" ng-click="createAccount();"class="button postfix">Create a New Account</a>
