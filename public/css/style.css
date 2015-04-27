@@ -54,6 +54,12 @@ td .line-input {
   display: inline-block;
 }
 
+#myModal .modal-input {
+  width: 10rem; 
+  display: inline; 
+  margin-right: 0.5rem;
+}
+
 .row{
   width: 100% !important; 
   min-width: 100% !important;

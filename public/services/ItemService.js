@@ -22,7 +22,6 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
         if (dateFilter)
           query = 'start_date=' + startDate.replace(/\//g, "-") +
                   '&end_date=' + endDate.replace(/\//g, "-");
-        debugger;
         return $http({
           method: 'GET',
           url: '/api/items?' + query,
