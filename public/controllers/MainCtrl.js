@@ -1,7 +1,7 @@
 // public/js/controllers/MainCtrl.js
 app.controller('MainController', function($scope, keyService, $location) {
 
-  $scope.tagline = 'Enter your security key below, or "demo" to see sample data.';
+  $scope.tagline = 'Login with your user name below, or use "demo123" (same for password) to see sample data.';
   $scope.viewStartDate = 'none';
   $scope.viewEndDate = 'none';
   $scope.login = '';

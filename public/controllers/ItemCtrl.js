@@ -1,7 +1,7 @@
 // public/js/controllers/ItemCtrl.js
 app.controller('ItemController', function($scope, itemService, keyService, $timeout, $route) {
   $scope.tagline = 'Enter your daily expenses as you go about your day.';
-  $scope.categories = ['Auto', 'Bills', 'Career', 'Cloths', 'Dates', 'Debt', 'Education', 'Fun', 'Gas', 'Giving','Grocery', 'Home', 'Medical', 'Misc','Restaurant','Savings' ];
+  $scope.categories = ['Auto', 'Bills', 'Career', 'Cloths', 'Dates', 'Debt', 'Education', 'Fun', 'Gas', 'Giving','Grocery', 'Home', 'Insurance', 'Medical', 'Mortgage', 'Misc', 'Phone', 'Rent', 'Restaurant','Savings', 'Training', 'Utilities' ];
   $scope.viewTotal = $scope.catTotal = 0;
   $scope.selectedCat = 'none';
   //$scope.dateFilterEnabled = false;
