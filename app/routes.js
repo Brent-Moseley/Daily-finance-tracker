@@ -123,11 +123,11 @@ var User = require('./models/user');
             });
           else {
             User.find({'userName': userName}).exec(function(err, user) {
-              console.log ('Trying to log in, Found this:' + user);
+              console.log ('Trying to log in, Found this:' + user[0]);
               console.log ('Checking against pwd: ' + pwd);
-              console.log (user[0].pwd);
+              //console.log (user[0].pwd);
               console.log ('err:' + err);
-              if (err || !user || user[0].pwd != pwd) {
+              if (err || !user || user.length == 0 || user[0].pwd != pwd) {
                 console.log ('Failed login');
                 res.send("false");   // unable to log in
               }
@@ -140,10 +140,7 @@ var User = require('./models/user');
             // http://docs.mongodb.org/manual/tutorial/query-documents/
             // http://docs.mongodb.org/manual/reference/operator/query/where/
             // http://mongoosejs.com/docs/queries.html
-            // if (err)
-            //     res.send(err);
-
-            // else res.json(items); // return all items in JSON format
+            // alternate to MongoDB:  http://www.rethinkdb.com/
           };
         });
 

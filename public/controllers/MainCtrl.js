@@ -6,7 +6,7 @@ app.controller('MainController', function($scope, keyService, $location) {
   $scope.viewEndDate = 'none';
   $scope.login = '';
 
-  $scope.login = function (userName, pwd) {
+  $scope.attemptlogin = function (userName, pwd) {
     if (!$scope.agree) return;
     console.log ('logging in as: ' + userName);
     $scope.login = userName;
@@ -55,7 +55,6 @@ app.controller('MainController', function($scope, keyService, $location) {
     console.log ('Creating account:' + userName + userPwd);
 
     keyService.confirmUserUnique (userName, function (result) {
-      debugger;
       if (result && result == 'false') {
         var key = $scope.generateKey();
         var message = 'Your new account has been created. Please keep your user ID and password safe,';
@@ -64,7 +63,6 @@ app.controller('MainController', function($scope, keyService, $location) {
         alert (message);
 
         keyService.createAccount (userName, userPwd, key, function (data) {
-          debugger;
           console.log ('New User create return message: ' + data);
           // date: "/ POST OK" indicates success.  Perhaps add some error checking, though
           // not sure what we could do in the event of an error.

@@ -21,7 +21,6 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   //  Weekly date picker:  http://www.tikalk.com/incubator/week-picker-using-jquery-ui-datepicker/
 
   $scope.getAll = function() {
-    debugger;
     itemService.get($scope.key, $scope.dateFilterEnabled, $scope.startDate, $scope.endDate)
       .then(function(data) {
           // promise fulfilled

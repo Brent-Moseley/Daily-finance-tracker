@@ -14,5 +14,5 @@ module.exports = mongoose.model('User', {
       pwd : {type : String, default: ''},
       key: {type : String, default: 'demo'}    // key is like a user ID
     },
-    'expenses');    // expenses is the collection name
+    'users');    // expenses is the collection name
 

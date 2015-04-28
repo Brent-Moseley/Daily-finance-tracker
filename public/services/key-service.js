@@ -26,7 +26,6 @@ app.factory('keyService', ['$http', '$q', function($http, $q) {
       })
         .then(function(response) {
           if (typeof response.data === 'string') {
-            debugger;
             callback(response.data);
           } else {
             // invalid response
@@ -48,7 +47,6 @@ app.factory('keyService', ['$http', '$q', function($http, $q) {
         .then(function(response) {
           if (response) {
             // returns the user ID / key if successful
-            debugger;
             if (typeof response.data === 'string' || typeof response.data === 'object')
               callback(response.data);
           } else {
@@ -77,7 +75,6 @@ app.factory('keyService', ['$http', '$q', function($http, $q) {
       })
         .then(function(response) {
           if (typeof response.data != undefined) {
-            debugger;
             callback(response.data);
           } else {
             // invalid response
