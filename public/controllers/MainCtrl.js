@@ -7,7 +7,7 @@ app.controller('MainController', function($scope, keyService, $location) {
   $scope.login = '';
 
   $scope.attemptlogin = function (userName, pwd) {
-    if (!$scope.agree) return;
+    if (!$scope.agree) return;     // Must agree to terms before loggin in
     console.log ('logging in as: ' + userName);
     $scope.login = userName;
     keyService.login (userName, pwd, function (response) {
@@ -15,7 +15,7 @@ app.controller('MainController', function($scope, keyService, $location) {
         alert ("Unable to login, check your user name and password again.");
       }
       else {
-        // login was successful, response is the key for this user
+        // login was successful, response from the service is the key for this user
         keyService.saveKey(response); 
         keyService.saveLogin($scope.login);
         $location.url('/items');  // redundant if called from the home page, but just in case is used elsewhere
@@ -25,6 +25,8 @@ app.controller('MainController', function($scope, keyService, $location) {
   }
 
   $scope.generateKey = function () {
+    //  Key for expense items for a new user.  In the future revision, just grab the _id that
+    //  Mongo creates and use that.
     if (!$scope.agree) return;
     var GUID = 'xxxx-9xxx-Zxxx-xxxxxx'.replace(/[xy]/g, function(c) {
       var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -51,7 +53,7 @@ app.controller('MainController', function($scope, keyService, $location) {
     var userName = $scope.userName || '';
     if (userPwd.length < 6 || userName.length < 6) $scope.lengthError = true;
     else $scope.lengthError = false;
-    if (!$scope.pass()) return;
+    if (!$scope.pass()) return;     // Check all conditions required for creating the account
     console.log ('Creating account:' + userName + userPwd);
 
     keyService.confirmUserUnique (userName, function (result) {
@@ -64,26 +66,20 @@ app.controller('MainController', function($scope, keyService, $location) {
 
         keyService.createAccount (userName, userPwd, key, function (data) {
           console.log ('New User create return message: ' + data);
-          // date: "/ POST OK" indicates success.  Perhaps add some error checking, though
-          // not sure what we could do in the event of an error.
           $('#myModal').foundation('reveal', 'close');
-
-          // $scope.login
         });       
       }
       else {
+        // Service returned a result that says the requested user already exists.
         $scope.duplicateError = true;
       }
     });
-
-    
   }
 
   $scope.pass = function () {
     var userPwdConfirm = $scope.userPwdConfirm;
     var userPwd = $scope.userPwd;
     var userName = $scope.userName;
-    console.log (userName + userPwd + userPwdConfirm);
     var result = (typeof userName != "undefined" &&
            typeof userPwd != "undefined" &&
            userName.length >= 6 &&

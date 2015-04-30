@@ -84,7 +84,6 @@ angular.module('ui.date', [])
       scope.$watch(getOptions, initDateWidget, true);
 
       scope.$watch('item.date', function(value, old) {
-        //debugger;
         element.datepicker("setDate", value);
       });
     }

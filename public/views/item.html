@@ -55,8 +55,6 @@
         <input type="text" ng-model="item.note" ng-change="updateNote(item._id, $index)" class="line-input">
       </td>
 
-<!--       <td class="text-center" ng-if="item.notes.length > 0"><a href="" ng-click="viewNotes(item.name, item.notes)">View</a></td>
-      <td class="text-center" ng-if="item.notes.length == 0"><a href="" ng-click="viewNotes(item.name, item.notes)">Add</a></td> -->
       <td class="text-center"><a href="" ng-click="remove(item._id)">X</a></td>
     </tr>
   </table>

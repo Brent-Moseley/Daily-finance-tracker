@@ -71,7 +71,6 @@ app.factory('keyService', ['$http', '$q', function($http, $q) {
         method: 'POST',
         url: '/api/users',
         data: data
-        //headers: {'key': key}
       })
         .then(function(response) {
           if (typeof response.data != undefined) {
