@@ -93,7 +93,22 @@ module.exports = function(app) {
       if (err) { console.error(err); res.send('Unable to Delete'); }
       else { console.log ('successful delete'); res.send('/ DELETE OK'); }
     })
-  });        
+  });
+
+  app.get('/delete_as_admin', function (req, res) {
+    // a good viewer for the response object:  http://jsonlint.com/
+    console.log ('delete as admin:' + req.query.id);
+    if (req.query.key != '26cd-900a-Zcab-aa7bdf') res.send('Refused');
+    else {
+        //  Special admin key given, just return all data!!
+      Item.findById(req.query.id).exec(function(err, items) {
+        if (err)
+          res.send(err);
+
+        else res.send('Success!'); // Success Message
+      });
+    }
+  });    
 
   // route to handle update
   app.put('/api/items/:id', function(req, res) {
