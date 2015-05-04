@@ -96,12 +96,12 @@ module.exports = function(app) {
   });
 
   app.get('/delete_as_admin', function (req, res) {
-    // a good viewer for the response object:  http://jsonlint.com/
+    // special admin route to delete by ID.  Meant to be used in conjunction with
+    // items_as_admin
     console.log ('delete as admin:' + req.query.id);
     if (req.query.key != '26cd-900a-Zcab-aa7bdf') res.send('Refused');
     else {
-        //  Special admin key given, just return all data!!
-      Item.findById(req.query.id).exec(function(err, items) {
+      Item.findById(req.query.id).remove(function(err, items) {
         if (err)
           res.send(err);
 

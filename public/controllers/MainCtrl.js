@@ -90,6 +90,13 @@ app.controller('MainController', function($scope, keyService, $location) {
     return result;
   }
 
+  $scope.help = function () {
+    var note = 'If you are experiencing issues with your account, I will do my best to be ';
+    note += 'of assistance.  Please contact me at:  techwrite88 at gmail.com and provide as ';
+    note += 'many details of the issue as you can.'
+    alert (note);
+  }
+
   keyService.saveLogin ('demo');  // Default security key, simple authentication to put in the header of all API requests
 
 });
