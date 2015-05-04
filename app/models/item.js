@@ -3,8 +3,10 @@
 var mongoose = require('mongoose');
 console.log (' Connecting to DB....');   // Make sure database is created and 
                                   // mongo db is running in a terminal: mongod
+//  TEST LOCAL DB URL:
 mongoose.connect('mongodb://localhost/daily-financial-tracker');  // NOTE:  this will create for you if does not exist.
-// PROD DB mongoose.connect('mongodb://root:root@proximus.modulusmongo.net:27017/exIbeb2e');   // PROD
+// PROD DB URL:
+//  mongoose.connect('mongodb://root:root@proximus.modulusmongo.net:27017/exIbeb2e');   // PROD
 
 
 // Imagine doing something big like Payment Manager / Organization Mgr / Session Mgr!!

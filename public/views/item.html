@@ -50,9 +50,12 @@
           <option ng-repeat="option in categories">{{option}}</option>
         </select>
       </td>
-      <td>{{item.cost}}</td>
+      <!-- <td>{{item.cost}}</td> -->
+       <td>
+        <input type="text" ng-model="item.cost" ng-change="updateNote(item._id, $index, true)" class="line-input">
+      </td>     
       <td>
-        <input type="text" ng-model="item.note" ng-change="updateNote(item._id, $index)" class="line-input">
+        <input type="text" ng-model="item.note" ng-change="updateNote(item._id, $index, false)" class="line-input">
       </td>
 
       <td class="text-center"><a href="" ng-click="remove(item._id)">X</a></td>

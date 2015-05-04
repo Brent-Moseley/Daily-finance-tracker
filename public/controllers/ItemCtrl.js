@@ -24,11 +24,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
           $scope.items = data;
           console.log ('data read:');
           console.log (data);
-          var total = 0;
-          angular.forEach (data, function (item) {
-            total += (parseFloat(item.cost) * 100);
-          });
-          $scope.viewTotal = total / 100;
+          updatePageTotals (data);
           $scope.login = keyService.getLogin();   // get the name of current user
         }
         $scope.newOne = '';
@@ -39,6 +35,15 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
       // Perhaps add some error handling here.
   }
   
+  function updatePageTotals (data) {
+    var total = 0;
+    angular.forEach (data, function (item) {
+      total += (parseFloat(item.cost) * 100);
+    });
+    $scope.viewTotal = total / 100;
+    $scope.calculateCatTotal();
+  } 
+
   $scope.addOne = function (newOne) {
   	console.log ('in add one / new item');
     itemService.create (newOne, moment().format("MM-DD-YYYY"), $scope.key)
@@ -63,14 +68,22 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
       });
   }
 
+
   $scope.timerUpdateNote = false;
-  $scope.updateNote = function (id, index) {
+  $scope.updatingCost = false;
+  $scope.updateNote = function (id, index, isCost) {
+    if ($scope.updatingCost && !isCost) updatePageTotals ($scope.items);  // Just went from updating cost to
+                                                            // updating notes, re-calculate page total
+    $scope.updatingCost = isCost;
     if ($scope.timerUpdateNote == false) {
       console.log ('Scheduling timeout for save');
       $scope.timerUpdateNote = true;
       // schedule a save for data due to note field edits, avoids constantly hitting server for updates
       // on every key stroke
-      $timeout( function() {$scope.update (id, $scope.items[index]); $scope.timerUpdateNote = false;}, 1000);
+      $timeout( function() {
+        if ($scope.updatingCost) updatePageTotals($scope.items);
+        $scope.update (id, $scope.items[index]); $scope.timerUpdateNote = false;
+      }, 1000);
 
     }
     else console.log ('Not yet, timeout already scheduled');

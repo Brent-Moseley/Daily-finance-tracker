@@ -9,6 +9,8 @@
 var Item = require('./models/item');
 var User = require('./models/user');
 
+// Set up a simple get route that include the API key below and just shows all transactions
+// and users.   
 module.exports = function(app) {
   // server routes ===========================================================
   // handle things like api calls
@@ -17,11 +19,29 @@ module.exports = function(app) {
   // sample api route
   // Need to break this code up soon into controllers for each model
   // *************  Items model stuff *****************
+
+  app.get('/items_as_admin', function (req, res) {
+    // a good viewer for the response object:  http://jsonlint.com/
+    console.log ('Items as admin:');
+    if (req.query.key != '26cd-900a-Zcab-aa7bdf') res.send('Refused');
+    else {
+        //  Special admin key given, just return all data!!
+      Item.find().exec(function(err, items) {
+        if (err)
+          res.send(err);
+
+        else res.json(items); // return all items in JSON format
+      });
+    }
+  });
+
   app.get('/api/items', function(req, res) {
     // use mongoose to get all items in the database
     console.log ('Request for all items:');
     console.log (req.headers);     // find out if there is logging that can be turned on
     console.log (req.headers.key);
+    console.log ('query key:' + req.query.key);
+
     if (!req.query.start_date || !req.query.end_date)
       // No start or end date provided, return all expense items by default
       Item.find({'key': req.headers.key}).sort('date').exec(function(err, items) {
@@ -99,12 +119,28 @@ module.exports = function(app) {
   // If a user name and password is provided, returns the key (user ID) if
   // login is allowed, otherwise returns empty string. This key is then used in
   // all further web service calls for getting and retrieving items, etc.
+  app.get('/users_as_admin', function (req, res) {
+    // a good viewer for the response object:  http://jsonlint.com/
+    console.log ('Users as admin:');
+    if (req.query.key != '26cd-900a-Zcab-aa7bdf') res.send('Refused');
+    else {
+        //  Special admin key given, just return all data!!
+      User.find().exec(function(err, items) {
+        if (err)
+          res.send(err);
+
+        else res.json(items); // return all items in JSON format
+      });
+    }
+  });
+
   app.get('/api/users', function(req, res) {
     console.log ('Checking for user:');
     var userName = req.query.user_name;
     var pwd = req.headers.pwd;
     var key = '';
     console.log (userName + ' ' + pwd);
+
     if (!pwd)
       //  Did not specify a pwd, so assume just checking existence of user
       User.find({'userName': userName}).exec(function(err, user) {
