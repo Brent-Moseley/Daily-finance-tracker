@@ -71,6 +71,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   }
 
   $scope.updateCategory = function (category) {
+    //debugger;
     itemService.updateCategory ({
       name: category.name,
       _id: category.id,

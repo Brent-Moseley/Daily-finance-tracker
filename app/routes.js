@@ -71,12 +71,13 @@ module.exports = function(app) {
   app.put('/api/categories/:id', function(req, res) {
     console.log (' in update for category' + req.params.id);
     console.log (req.header);
-    console.log (req.body.data);
+    var body = JSON.parse(req.body.data);
+    console.log (body);
     // id value will come in this format: "&id=5474bd2f118b2d00008b1ab8"
     var conditions = { '_id': req.params.id.substring(4)};
     console.log ('conditions:');
     console.log (conditions);
-    Category.update(conditions, req.body.data, function (err, rowsAffected) {
+    Category.update(conditions, body, function (err, rowsAffected) {
       console.log ('Returned from category update, rows affected: ' + rowsAffected);
       console.log ('err: ' + err);
       if (err) { console.error(err); res.send('Unable to Update'); }

@@ -26,7 +26,7 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
       },
 
       updateCategory: function (data, key, callback) {
-        debugger;
+        //debugger;
         if (data._id == 0) {
           // new Category record
           console.log ('in create category for: ' + key);
@@ -35,7 +35,7 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
           // Note this is only creating a new item with today's date and the amount,
           //  will then be updated in real time when the user changes
           //  drop down options, adds a note, etc. 
-          var payload = JSON.stringify ({'name': data.name, 'limit': data.limit, 'key': key});
+          var payload = {'name': data.name, 'limit': data.limit, 'key': key};
           return $http({
             method: 'POST',
             url: '/api/categories',
@@ -44,8 +44,9 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
           })
             .then(function(response) {
             if (typeof response === 'object') {
-              console.log ('Successful new category, new id: ' + response);
-              return response;
+              //debugger;
+              console.log ('Successful new category, new id: ' + response.data);
+              return response.data;
             } else {
               // invalid response
               return $q.reject(response.data);
@@ -60,9 +61,6 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
           // to the back end.
           var payload = JSON.stringify ({'name': data.name, 'limit': data.limit, 'key': key});
 
-          // delete data['_id']; 
-          // delete data['__v'];   // This is like row version
-          // delete data['$$hashKey'];
           console.log (data);
           // Putting user key in the header
           // is not necessary here since we are updating by ID

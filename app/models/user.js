@@ -10,7 +10,6 @@ console.log (' Defining User model....');
 module.exports = mongoose.model('User', {
       userName : {type : String, default: ''},
       pwd : {type : String, default: ''},
-      pin: {type : String, default: ''},       // used for password reset
       key: {type : String, default: 'demo'}    // key is like a user ID
     },
     'users');    // collection name
