@@ -35,6 +35,54 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
       // Perhaps add some error handling here.
   }
   
+  $scope.openCategoryPopup = function () {
+    $scope.modalCategories = [];
+    itemService.getCategories ($scope.key)
+      .then(function (data) {
+        angular.forEach ($scope.categories, function (cat) {
+          // Go through each category, see if you can find current category in the object
+          // returned from the back end.  If so, push onto the array its data, otherwise,
+          // make defaults.
+          var total = 
+              limit = 
+              id = 0;
+
+          angular.forEach (data, function (datacat) {
+            if (datacat.name == cat) {
+              total = datacat.limit;   // need to have the back end create these
+              limit = datacat.limit;
+              id = datacat._id;
+            }
+          });
+          $scope.modalCategories.push ({
+            name: cat,
+            currentTotal: total,
+            highlight: 'green',
+            limit: limit,
+            id: id
+          });
+        });
+        console.log ('Pushing this:');
+        console.log ($scope.modalCategories);
+        $('#categoryModal').foundation('reveal', 'open');
+      }, function (err) {
+        console.log ('Error in getting category data:' + err);
+      });
+  }
+
+  $scope.updateCategory = function (category) {
+    itemService.updateCategory ({
+      name: category.name,
+      _id: category.id,
+      limit: category.limit
+    }, $scope.key)
+    .then (function (data) {
+      // returns the new ID, if there is one.
+      console.log (' newly assigned ID: ' + data);
+      if (data) category.id = data;
+    });
+  }
+
   function updatePageTotals (data) {
     var total = 0;
     angular.forEach (data, function (item) {

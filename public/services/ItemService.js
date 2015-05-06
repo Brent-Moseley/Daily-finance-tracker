@@ -5,6 +5,78 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
     //   Promises are just another way to do callbacks, via chaining.
     //
     return {
+      getCategories: function (key) {
+        return $http({
+          method: 'GET',
+          url: '/api/categories',
+          headers: {'key': key}
+        })
+          .then(function(response) {
+            if (typeof response.data === 'object') {
+              return response.data;
+            } else {
+              // invalid response
+              return $q.reject(response.data);
+            }
+
+            }, function(response) {
+              // something went wrong
+              return $q.reject(response.data);
+            });
+      },
+
+      updateCategory: function (data, key, callback) {
+        debugger;
+        if (data._id == 0) {
+          // new Category record
+          console.log ('in create category for: ' + key);
+          console.log (data);
+          var saveDate = data;
+          // Note this is only creating a new item with today's date and the amount,
+          //  will then be updated in real time when the user changes
+          //  drop down options, adds a note, etc. 
+          var payload = JSON.stringify ({'name': data.name, 'limit': data.limit, 'key': key});
+          return $http({
+            method: 'POST',
+            url: '/api/categories',
+            data: payload,
+            headers: {'key': key}
+          })
+            .then(function(response) {
+            if (typeof response === 'object') {
+              console.log ('Successful new category, new id: ' + response);
+              return response;
+            } else {
+              // invalid response
+              return $q.reject(response.data);
+            };          
+          });
+        }
+        else {
+          // update existing Category record
+         console.log (' in category update:');
+          // the data that comes in is a modification of the original
+          // item object that was loaded.  Delete what should not be sent
+          // to the back end.
+          var payload = JSON.stringify ({'name': data.name, 'limit': data.limit, 'key': key});
+
+          // delete data['_id']; 
+          // delete data['__v'];   // This is like row version
+          // delete data['$$hashKey'];
+          console.log (data);
+          // Putting user key in the header
+          // is not necessary here since we are updating by ID
+          return $http({
+            url: '/api/categories/&id=' + data._id,
+            method: "PUT",
+            data: {
+              'data': payload
+            },
+            headers: {'Content-Type':'application/json', 'key': key}
+          })          
+        }
+      },
+
       get : function(key, dateFilter, startDate, endDate) {
         var query = '';
         if (dateFilter)

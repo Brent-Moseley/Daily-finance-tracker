@@ -21,6 +21,16 @@ body {
   }
 }
 
+.green {
+  color: green;
+}
+.red {
+  color: red;
+}
+.yellow {
+  color: yellow;
+}
+
 th, td {
   text-align: center;
   padding: 0.3rem !important;  

@@ -69,7 +69,7 @@
       {{viewTotal | currency}} 
     </div>
     <div class="small-3 medium-3 large-3 columns">
-      Category Total:
+      Category Total this Page:
     </div>
     <div class="small-3 medium-3 large-3 columns">
       <select ng-model="selectedCat" ng-change="calculateCatTotal(selectedCat)">
@@ -80,6 +80,13 @@
       {{catTotal | currency}}
     </div>    
   </div>             
+  <div class="row">
+    <div class="small-7 medium-7 large-7 columns">
+    </div>
+    <div class="small-5 medium-5 large-5 columns">
+      <a ng-click="openCategoryPopup();"class="button postfix" style="width: 10rem;">Category Limits</a>
+    </div>
+  </div>
   <br>
   Add a new expense (enter dollar value, then add details above):<br>
   <div class="row">
@@ -94,5 +101,31 @@
       </div>
     </div>
   </div>  
-  <!-- <note-popup></note-popup> -->
-</div>
+  <!-- CATEGORY POPUP, MAKE INTO DIRECTIVE LATER -->
+  <div id="categoryModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+    <h3 id="modalTitle">Categories</h3>
+
+    <table>
+      <th width="120">Category Name</th>
+      <th width="100">Monthly Limit</th> 
+      <th width="100">Current Month Total</th>
+      <th width="50">Remove</th>
+      <tr ng-repeat="category in modalCategories track by $index">
+        <!-- <td>{{item.date}}</td> -->
+        <td>
+          {{category.name}}
+        </td>
+        <td>
+          <input type="text" ng-model="category.limit" class="line-input" ng-blur="updateCategory(category)"/>
+        </td>
+        <td ng-class="category.highlight">
+          {{category.currentTotal}}
+        </td>
+        <td class="text-center"><a href="" ng-click="remove(item._id)">X</a></td>
+      </tr>
+    </table>
+   
+    <p><a ng-click="recalculate();"class="button postfix" style="width: 10rem;">Re-calculate</a></p>
+
+    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+  </div></div>

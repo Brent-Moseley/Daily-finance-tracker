@@ -59,8 +59,8 @@ app.controller('MainController', function($scope, keyService, $location) {
     keyService.confirmUserUnique (userName, function (result) {
       if (result && result == 'false') {
         var key = $scope.generateKey();
-        var message = 'Your new account has been created. Please keep your user ID and password safe,';
-        message += 'as there is no way to retrieve this if you lose it.  Your login will be the only way to access your ';
+        var message = 'Your new account has been created! Please keep your user ID and password safe,';
+        message += 'as password reset can take up to two weeks if you lose it.  Your login will be the only way to access your ';
         message += 'daily expense information.';
         alert (message);
 

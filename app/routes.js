@@ -8,6 +8,7 @@
 // Require in the models
 var Item = require('./models/item');
 var User = require('./models/user');
+var Category = require('./models/category');
 
 // Set up a simple get route that include the API key below and just shows all transactions
 // and users.   
@@ -20,6 +21,71 @@ module.exports = function(app) {
   // Need to break this code up soon into controllers for each model
   // *************  Items model stuff *****************
 
+  app.get('/api/categories', function(req, res) {
+    // use mongoose to get all items in the database
+    console.log ('Request for categories for:' + req.headers.key);
+    Category.find({'key': req.headers.key}).sort('name').exec(function(err, items) {
+
+      // var dummy = [{
+      //   _id: 123123123,
+      //   name: 'Auto',
+      //   limit: 43,
+      //   total: 43   // Add in, this is not in the model, need to write a function that
+      //               // can query all records for current month in this category.
+      // },
+      // {
+      //   _id: 126123126,
+      //   name: 'Medical',
+      //   limit: 56,
+      //   total: 56   // Add in, this is not in the model, need to write a function that
+      //               // can query all records for current month in this category.
+      // }
+      // ];
+      if (err)
+          res.send(err);
+      //console.log (res);
+      //console.log (items);
+      res.json(items); // return all items in JSON format, dummy for now
+    });
+  });
+
+  // route to handle creating new category (app.post)
+  app.post('/api/categories', function(req, res) {
+    req.body.key = req.headers.key;
+    var next = new Category(req.body);
+
+    console.log ('create new category:');
+    console.log (req.header);
+    console.log (req.body);
+    next.save(function (err, obj) {
+      if (err) { console.error(err); res.send('ERROR posting'); }
+      else { 
+        console.log ('Successful add of: ' + obj.id); 
+        res.send(obj.id); 
+      }
+    });
+  });
+
+
+  // route to handle update
+  app.put('/api/categories/:id', function(req, res) {
+    console.log (' in update for category' + req.params.id);
+    console.log (req.header);
+    console.log (req.body.data);
+    // id value will come in this format: "&id=5474bd2f118b2d00008b1ab8"
+    var conditions = { '_id': req.params.id.substring(4)};
+    console.log ('conditions:');
+    console.log (conditions);
+    Category.update(conditions, req.body.data, function (err, rowsAffected) {
+      console.log ('Returned from category update, rows affected: ' + rowsAffected);
+      console.log ('err: ' + err);
+      if (err) { console.error(err); res.send('Unable to Update'); }
+      else { console.log ('successful category update'); res.send('/ UPDATE OK'); }
+    });
+  }); 
+
+  // **********  Items stuff **************************
+  //
   app.get('/items_as_admin', function (req, res) {
     // a good viewer for the response object:  http://jsonlint.com/
     console.log ('Items as admin:');
