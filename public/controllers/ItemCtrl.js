@@ -35,43 +35,94 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
       // Perhaps add some error handling here.
   }
   
+  // Initially, this is always defined as a monthly amount for the current month.
+  // There will be a Category Limits button below the category drop down.
+  // Clicking this will bring up the Category popup.  Here will be a listing of all
+  // categories, the current monthly total for each (query the backend for these), and
+  // this pre-defined limit.  The total will appear via this color theme:  Green: OK,
+  // yellow only 25% left, red 10% left or less.  User can then change their monthly budget
+  // limits.   
   $scope.openCategoryPopup = function () {
     $scope.modalCategories = [];
-    itemService.getCategories ($scope.key)
-      .then(function (data) {
-        angular.forEach ($scope.categories, function (cat) {
-          // Go through each category, see if you can find current category in the object
-          // returned from the back end.  If so, push onto the array its data, otherwise,
-          // make defaults.
-          var total = 
-              limit = 
-              id = 0;
+    var now = new Date();
+ 
+    var startDate = moment([now.getFullYear(), now.getMonth()]);
 
-          angular.forEach (data, function (datacat) {
-            if (datacat.name == cat) {
-              total = datacat.limit;   // need to have the back end create these
-              limit = datacat.limit;
-              id = datacat._id;
-            }
+    // Clone the value before .endOf()
+    var endDate = moment(startDate).endOf('month');
+
+    startDate = startDate.format('L');
+    endDate = endDate.format('L');
+    
+    var totals = $scope.categories.reduce(function(o, v, i) {
+      o[v] = 0;
+      return o;
+    }, {}); 
+    // reduce down set of expense items documents to those within the current month
+    // set up category total array
+    // go through all transactions, adding costs into each array "bucket"
+    itemService.get($scope.key, true, startDate, endDate)
+      .then(function(data) {
+        // promise fulfilled
+        if (data) {
+          $scope.items = data;
+          console.log ('data read:');
+          console.log (data);
+
+          // Create summations for each category in totals
+          angular.forEach (data, function (item) {
+            totals[item.category] += (parseFloat(item.cost) * 100);
           });
-          $scope.modalCategories.push ({
-            name: cat,
-            currentTotal: total,
-            highlight: 'green',
-            limit: limit,
-            id: id
+          angular.forEach ($scope.categories, function (total) {
+            totals[total] = totals[total] / 100;
           });
-        });
-        console.log ('Pushing this:');
-        console.log ($scope.modalCategories);
-        $('#categoryModal').foundation('reveal', 'open');
-      }, function (err) {
-        console.log ('Error in getting category data:' + err);
+          console.log ('Totals:');
+          console.log (totals);
+
+          itemService.getCategories ($scope.key)
+            .then(function (data2) {
+              console.log ('Categories came back as:');
+              console.log (data2);
+              angular.forEach ($scope.categories, function (cat) {
+                // Go through each category, see if you can find current category in the object
+                // returned from the back end.  If so, push onto the array its data, otherwise,
+                // make defaults.
+                var total = totals[cat];
+                var limit = 
+                    id = 0;
+                var css = 'green';    // Default to green
+                    console.log ('Looking for category: ' + cat);
+
+                angular.forEach (data2, function (datacat) {
+                  if (datacat.name == cat) {
+                    console.log ('   found, adding total:' + totals[datacat.name]);
+                    console.log ('   Adding limit of: ' + datacat.limit);
+                    limit = datacat.limit;
+                    var percentLeft = (limit - total) / limit * 100;
+                    if (percentLeft < 25.01) css = 'yellow'; 
+                    if (percentLeft < 10.01) css = 'red';
+                    id = datacat._id;
+                  }
+                });
+                $scope.modalCategories.push ({
+                  name: cat,
+                  currentTotal: total,
+                  highlight: css,
+                  limit: limit,
+                  id: id
+                });
+              });
+              console.log ('Pushing this:');
+              console.log ($scope.modalCategories);
+              $('#categoryModal').foundation('reveal', 'open');
+            }, function (err) {
+              console.log ('Error in getting category data:' + err);
+            });
+        }
       });
   }
 
   $scope.updateCategory = function (category) {
-    //debugger;
     itemService.updateCategory ({
       name: category.name,
       _id: category.id,

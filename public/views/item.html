@@ -101,11 +101,11 @@
       </div>
     </div>
   </div>  
-  
+
   <!-- CATEGORY POPUP, MAKE INTO DIRECTIVE LATER -->
   <div id="categoryModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
     <h3 id="modalTitle">Categories</h3>
-
+    Shows your totals for the current month in each category, and is color coded to show how close you are to your budget limit.
     <table>
       <th width="120">Category Name</th>
       <th width="100">Monthly Limit</th> 
@@ -120,7 +120,7 @@
           <input type="text" ng-model="category.limit" class="line-input" ng-blur="updateCategory(category)"/>
         </td>
         <td ng-class="category.highlight">
-          {{category.currentTotal}}
+          {{category.currentTotal | currency}}
         </td>
         <td class="text-center"><a href="" ng-click="remove(item._id)">X</a></td>
       </tr>

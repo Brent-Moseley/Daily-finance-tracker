@@ -22,32 +22,21 @@ module.exports = function(app) {
   // *************  Items model stuff *****************
 
   app.get('/api/categories', function(req, res) {
-    // use mongoose to get all items in the database
+    // use mongoose to get all categories in the database
     console.log ('Request for categories for:' + req.headers.key);
     Category.find({'key': req.headers.key}).sort('name').exec(function(err, items) {
-
-      // var dummy = [{
-      //   _id: 123123123,
-      //   name: 'Auto',
-      //   limit: 43,
-      //   total: 43   // Add in, this is not in the model, need to write a function that
-      //               // can query all records for current month in this category.
-      // },
-      // {
-      //   _id: 126123126,
-      //   name: 'Medical',
-      //   limit: 56,
-      //   total: 56   // Add in, this is not in the model, need to write a function that
-      //               // can query all records for current month in this category.
-      // }
-      // ];
       if (err)
           res.send(err);
-      //console.log (res);
-      //console.log (items);
-      res.json(items); // return all items in JSON format, dummy for now
+      res.json(items);
     });
   });
+
+  // Possible future refactor:  Use the Aggregation pipeline to sum categories.
+  // http://docs.mongodb.org/manual/reference/operator/aggregation/sum/
+  // http://stackoverflow.com/questions/25557966/query-and-sum-all-with-mongoose
+  // http://docs.mongodb.org/manual/reference/operator/aggregation/group/#pipe._S_group 
+  // http://docs.mongodb.org/manual/core/aggregation/
+  // http://docs.mongodb.org/manual/reference/command/mapReduce/#dbcmd.mapReduce  Map Reduce, very cool MongoDB feature!
 
   // route to handle creating new category (app.post)
   app.post('/api/categories', function(req, res) {
