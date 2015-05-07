@@ -41,9 +41,10 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   // categories, the current monthly total for each (query the backend for these), and
   // this pre-defined limit.  The total will appear via this color theme:  Green: OK,
   // yellow only 25% left, red 10% left or less.  User can then change their monthly budget
-  // limits.   
+  // limits.  
+  $scope.loadedCategories = [];  
+  $scope.totals = [];
   $scope.openCategoryPopup = function () {
-    $scope.modalCategories = [];
     var now = new Date();
  
     var startDate = moment([now.getFullYear(), now.getMonth()]);
@@ -54,7 +55,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     startDate = startDate.format('L');
     endDate = endDate.format('L');
     
-    var totals = $scope.categories.reduce(function(o, v, i) {
+    $scope.totals = $scope.categories.reduce(function(o, v, i) {
       o[v] = 0;
       return o;
     }, {}); 
@@ -71,55 +72,65 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
 
           // Create summations for each category in totals
           angular.forEach (data, function (item) {
-            totals[item.category] += (parseFloat(item.cost) * 100);
+            $scope.totals[item.category] += (parseFloat(item.cost) * 100);
           });
           angular.forEach ($scope.categories, function (total) {
-            totals[total] = totals[total] / 100;
+            $scope.totals[total] = $scope.totals[total] / 100;
           });
           console.log ('Totals:');
-          console.log (totals);
+          console.log ($scope.totals);
 
           itemService.getCategories ($scope.key)
             .then(function (data2) {
+              $scope.loadedCategories = data2;
               console.log ('Categories came back as:');
               console.log (data2);
-              angular.forEach ($scope.categories, function (cat) {
-                // Go through each category, see if you can find current category in the object
-                // returned from the back end.  If so, push onto the array its data, otherwise,
-                // make defaults.
-                var total = totals[cat];
-                var limit = 
-                    id = 0;
-                var css = 'green';    // Default to green
-                    console.log ('Looking for category: ' + cat);
 
-                angular.forEach (data2, function (datacat) {
-                  if (datacat.name == cat) {
-                    console.log ('   found, adding total:' + totals[datacat.name]);
-                    console.log ('   Adding limit of: ' + datacat.limit);
-                    limit = datacat.limit;
-                    var percentLeft = (limit - total) / limit * 100;
-                    if (percentLeft < 25.01) css = 'yellow'; 
-                    if (percentLeft < 10.01) css = 'red';
-                    id = datacat._id;
-                  }
-                });
-                $scope.modalCategories.push ({
-                  name: cat,
-                  currentTotal: total,
-                  highlight: css,
-                  limit: limit,
-                  id: id
-                });
-              });
-              console.log ('Pushing this:');
-              console.log ($scope.modalCategories);
-              $('#categoryModal').foundation('reveal', 'open');
+              $scope.recalculate();
+              if (!$('#categoryModal').hasClass('open')) $('#categoryModal').foundation('reveal', 'open');
             }, function (err) {
               console.log ('Error in getting category data:' + err);
             });
         }
       });
+  }
+
+  $scope.recalculate = function () {
+    console.log ('re-calculating');
+    $scope.modalCategories = [];
+
+    angular.forEach ($scope.categories, function (cat) {
+      // Go through each category, see if you can find current category in the object
+      // returned from the back end.  If so, push onto the array its data, otherwise,
+      // make defaults.
+      var total = $scope.totals[cat];
+      var limit = 
+          id = 0;
+      var css = 'green';    // Default to green
+          console.log ('Looking for category: ' + cat);
+
+      angular.forEach ($scope.loadedCategories, function (datacat) {
+        if (datacat.name == cat) {
+          console.log ('   found, adding total:' + $scope.totals[datacat.name]);
+          console.log ('   Adding limit of: ' + datacat.limit);
+          limit = datacat.limit;
+          var percentLeft = (limit - total) / limit * 100;
+          if (percentLeft < 25.01) css = 'yellow'; 
+          if (percentLeft < 10.01) css = 'red';
+          id = datacat._id;
+        }
+      });
+      $scope.modalCategories.push ({
+        name: cat,
+        currentTotal: total,
+        highlight: css,
+        limit: limit,
+        id: id
+      });
+    });
+    console.log ('Pushing this:');
+    console.log ($scope.modalCategories);
+
   }
 
   $scope.updateCategory = function (category) {

@@ -31,6 +31,8 @@ module.exports = mongoose.model('Item', {
     'expenses');    // the collection name
 
 // *****  Notes *****
+// Angular app architecting:
+//   https://www.airpair.com/angularjs/posts/top-10-mistakes-angularjs-developers-make
 // Doc on creating a DB and collection:
 // http://docs.mongodb.org/manual/tutorial/getting-started/
 // http://stackoverflow.com/questions/11117854/many-to-many-mapping-with-mongoose
