@@ -15,6 +15,7 @@ app.controller('MainController', function($scope, keyService, $location) {
     keyService.login (userName, pwd, function (response) {
       if (typeof response === 'string' && response == 'false') {
         alert ("Unable to login, check your user name and password again.");
+        $scope.loading = false;
       }
       else {
         // login was successful, response from the service is the key for this user
@@ -39,6 +40,8 @@ app.controller('MainController', function($scope, keyService, $location) {
   }
 
   $scope.createAccount = function () {
+    if (!$scope.agree) return;     // Must agree to terms before creating an account
+
     $scope.lengthError = false;
     $scope.duplicateError = false; 
     $scope.userName =
