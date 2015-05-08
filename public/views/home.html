@@ -18,10 +18,11 @@
             <input type="password" placeholder="Password" ng-model="pwd">
           </div>          
           <div class="small-3 medium-3 large-3 columns" >
-            <a ng-disabled="!agree" ng-click="attemptlogin(userName, pwd);"class="button postfix">Log In</a>
+            <a ng-show="!loading" ng-disabled="!agree || loading" ng-click="attemptlogin(userName, pwd);"class="button postfix">Log In</a>
+            <img ng-show="loading" src="images/loading-1.gif" />
           </div>
           <div class="small-3 medium-3 large-3 columns" >
-            <a ng-disabled="!agree" ng-click="createAccount();"class="button postfix">Create a New Account</a>
+            <a ng-disabled="!agree || loading" ng-click="createAccount();"class="button postfix">Create a New Account</a>
           </div>          
         </div>
         NOTE: When you create a new account, you will be prompted to create a user ID and a password for yourself.  User ID and password must be at least 6 characters each, using at least one number or special character in your password is recommended.

@@ -7,6 +7,9 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   $scope.selectedCat = 'none';
   $scope.key = keyService.getKey();
   $scope.login = keyService.getLogin();
+  $scope.loadingAdd = false;
+  $scope.loadingCategories = false;
+  $scope.recalcCategories = false;
   $scope.dateOptions = {
       // options -  http://api.jqueryui.com/datepicker/#option-minDate
       // minDate: 0,
@@ -45,6 +48,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   $scope.loadedCategories = [];  
   $scope.totals = [];
   $scope.openCategoryPopup = function () {
+    $scope.loadingCategories = $scope.recalcCategories = true;
     var now = new Date();
  
     var startDate = moment([now.getFullYear(), now.getMonth()]);
@@ -88,6 +92,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
 
               $scope.recalculate();
               if (!$('#categoryModal').hasClass('open')) $('#categoryModal').foundation('reveal', 'open');
+              $scope.loadingCategories = $scope.recalcCategories = false;
             }, function (err) {
               console.log ('Error in getting category data:' + err);
             });
@@ -115,6 +120,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
           console.log ('   Adding limit of: ' + datacat.limit);
           limit = datacat.limit;
           var percentLeft = (limit - total) / limit * 100;
+          if (percentLeft >= 25.01) css = 'green';   // in case of multiple limits for one category - an old bug.
           if (percentLeft < 25.01) css = 'yellow'; 
           if (percentLeft < 10.01) css = 'red';
           id = datacat._id;
@@ -130,7 +136,10 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     });
     console.log ('Pushing this:');
     console.log ($scope.modalCategories);
+  }
 
+  $scope.closeCategoryPopup = function () {
+    $('#categoryModal').foundation('reveal', 'close');
   }
 
   $scope.updateCategory = function (category) {
@@ -157,10 +166,12 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
 
   $scope.addOne = function (newOne) {
   	console.log ('in add one / new item');
+    $scope.loadingAdd = true;
     itemService.create (newOne, moment().format("MM-DD-YYYY"), $scope.key)
       .then(function(data) {
         $scope.getAll();
         $scope.calculateCatTotal($scope.selectedCat);
+        $scope.loadingAdd = false;
       }, function(err) {
         console.log (' Error in add One');
         console.log(err);

@@ -5,9 +5,11 @@ app.controller('MainController', function($scope, keyService, $location) {
   $scope.viewStartDate = 'none';
   $scope.viewEndDate = 'none';
   $scope.login = '';
+  $scope.loading = false;
 
   $scope.attemptlogin = function (userName, pwd) {
     if (!$scope.agree) return;     // Must agree to terms before loggin in
+    $scope.loading = true;
     console.log ('logging in as: ' + userName);
     $scope.login = userName;
     keyService.login (userName, pwd, function (response) {
