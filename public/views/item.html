@@ -30,7 +30,8 @@
         <input class="calendar" type="text" ng-model="endDate" ui-date="dateOptions"/>
       </div>
       <div class="small-2 medium-2 large-2 columns">
-        <a ng-click="dateFilter(startDate, endDate)" class="button postfix show">Show</a>
+        <a ng-show="!updatingDates" ng-click="dateFilter(startDate, endDate)" class="button postfix show">Show</a>
+        <img ng-show="updatingDates" src="images/loading-1.gif" />
       </div>
     </div>
   </div>
@@ -52,7 +53,7 @@
       </td>
       <!-- <td>{{item.cost}}</td> -->
        <td>
-        <input type="text" ng-model="item.cost" ng-change="updateNote(item._id, $index, true)" class="line-input">
+        <input type="text" ng-model="item.cost" filter-element="numberCurrency" ng-change="updateNote(item._id, $index, true)" class="line-input">
       </td>     
       <td>
         <input type="text" ng-model="item.note" ng-change="updateNote(item._id, $index, false)" class="line-input">
@@ -84,7 +85,7 @@
     <div class="small-7 medium-7 large-7 columns">
     </div>
     <div class="small-5 medium-5 large-5 columns">
-      <a ng-show="!loadingCategories" ng-click="openCategoryPopup();"class="button postfix" style="width: 10rem;">Category Limits</a>
+      <a ng-show="!loadingCategories" ng-click="openCategoryPopup();" id="category-button" class="button postfix" style="width: 10rem;">Category Limits</a>
       <img ng-show="loadingCategories" src="images/loading-1.gif" />
     </div>
   </div>
@@ -94,7 +95,7 @@
     <div class="large-10 columns">
       <div class="row collapse">
         <div class="small-10 medium-8 large-8 columns">
-          <input type="text" placeholder="New cost" ng-model="newOne">
+          <input type="text" placeholder="New cost" filter-element="numberCurrency" ng-model="newOne">
         </div>
         <div class="small-2 medium-4 large-4 columns">
           <a ng-show="!loadingAdd" id="add-button" ng-click="addOne(newOne)"class="button postfix">Add</a>
@@ -119,7 +120,7 @@
           {{category.name}}
         </td>
         <td>
-          <input type="text" ng-model="category.limit" class="line-input" ng-blur="updateCategory(category)"/>
+          <input type="text" ng-model="category.limit" filter-element="numberCurrency" class="line-input" ng-blur="updateCategory(category)"/>
         </td>
         <td ng-class="category.highlight">
           {{category.currentTotal | currency}}

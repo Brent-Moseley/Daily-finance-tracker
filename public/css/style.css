@@ -52,6 +52,10 @@ th, td {
   z-index: 1;
 }
 
+#category-button {
+  z-index: 1;
+}
+
 input.calendar {
   margin: 0 !important;
 }

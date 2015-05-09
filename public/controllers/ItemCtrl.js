@@ -10,6 +10,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   $scope.loadingAdd = false;
   $scope.loadingCategories = false;
   $scope.recalcCategories = false;
+  $scope.updatingDates = false;
   $scope.dateOptions = {
       // options -  http://api.jqueryui.com/datepicker/#option-minDate
       // minDate: 0,
@@ -70,7 +71,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
       .then(function(data) {
         // promise fulfilled
         if (data) {
-          $scope.items = data;
+          $scope.catItems = data;
           console.log ('data read:');
           console.log (data);
 
@@ -230,7 +231,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   $scope.dateFilter = function (startDate, endDate) {
     // Put the date filter parameters on the parent scope, since the reload is going
     // to reset this controller.
-    $scope.$parent.dateFilterEnabled = true;
+    $scope.$parent.dateFilterEnabled = $scope.updatingDates = true;
     $scope.$parent.startDate = $scope.$parent.viewStartDate = startDate;
     $scope.$parent.endDate = $scope.$parent.viewEndDate = endDate;
 
