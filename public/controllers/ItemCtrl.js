@@ -44,20 +44,29 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
       // Perhaps add some error handling here.
   }
 
+  $scope.sortDirection = {date: -1, category: -1, cost: -1};
   $scope.columnSort = function (col) {
+    $scope.sortDirection[col] *= -1;
     $scope.items = $scope.items.sort(function (a,b) {
       if (a[col] == b[col]) return 0;
       //console.log (a.category < b.category);
-      return a[col] < b[col] ? -1 : 1;
+      if ($scope.sortDirection[col] == 1)
+        return a[col] < b[col] ? -1 : 1;
+      else
+        return a[col] > b[col] ? -1 : 1;
     });
 
   }
 
   $scope.columnSortNum = function (col) {
+    $scope.sortDirection[col] *= -1;
     $scope.items = $scope.items.sort(function (a,b) {
       if (parseFloat(a[col]) == parseFloat(b[col])) return 0;
       //console.log (a.category < b.category);
-      return parseFloat(a[col]) < parseFloat(b[col]) ? -1 : 1;
+      if ($scope.sortDirection[col] == 1)
+        return parseFloat(a[col]) < parseFloat(b[col]) ? -1 : 1;
+      else
+        return parseFloat(a[col]) > parseFloat(b[col]) ? -1 : 1;
     });
 
   }  
