@@ -36,9 +36,9 @@
     </div>
   </div>
   <table>
-    <th width="120">Date</th>
-    <th width="100">Category</th> 
-    <th width="100">Cost</th>
+    <th width="120" class="hand-clickable" ng-click="columnSort('date');">Date</th>
+    <th width="100" class="hand-clickable" ng-click="columnSort('category');">Category</th> 
+    <th width="100" class="hand-clickable" ng-click="columnSortNum('cost');">Cost</th>
     <th width="350">Notes</th>
     <th width="50">Remove</th>
     <tr ng-repeat="item in items track by $index">

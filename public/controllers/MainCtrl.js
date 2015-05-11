@@ -8,7 +8,7 @@ app.controller('MainController', function($scope, keyService, $location) {
   $scope.loading = false;
 
   $scope.attemptlogin = function (userName, pwd) {
-    if (!$scope.agree) return;     // Must agree to terms before loggin in
+    if (!$scope.agree) { alert ('You must agree to the terms before logging in.'); return; }     // Must agree to terms before loggin in
     $scope.loading = true;
     console.log ('logging in as: ' + userName);
     $scope.login = userName;
@@ -40,7 +40,7 @@ app.controller('MainController', function($scope, keyService, $location) {
   }
 
   $scope.createAccount = function () {
-    if (!$scope.agree) return;     // Must agree to terms before creating an account
+    if (!$scope.agree) { alert ('You must agree to the terms before logging in.'); return; }     // Must agree to terms before creating an account
 
     $scope.lengthError = false;
     $scope.duplicateError = false; 

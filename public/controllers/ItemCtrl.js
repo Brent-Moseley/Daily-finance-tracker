@@ -25,9 +25,14 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
       .then(function(data) {
         // promise fulfilled
         if (data) {
+          // $scope.items = data.sort(function (a,b) {
+          //   if (a.category == b.category) return 0;
+          //   console.log (a.category < b.category);
+          //   return a.category < b.category ? -1 : 1;
+          // });
           $scope.items = data;
           console.log ('data read:');
-          console.log (data);
+          console.log ($scope.items);
           updatePageTotals (data);
           $scope.login = keyService.getLogin();   // get the name of current user
         }
@@ -38,6 +43,24 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
       });
       // Perhaps add some error handling here.
   }
+
+  $scope.columnSort = function (col) {
+    $scope.items = $scope.items.sort(function (a,b) {
+      if (a[col] == b[col]) return 0;
+      //console.log (a.category < b.category);
+      return a[col] < b[col] ? -1 : 1;
+    });
+
+  }
+
+  $scope.columnSortNum = function (col) {
+    $scope.items = $scope.items.sort(function (a,b) {
+      if (parseFloat(a[col]) == parseFloat(b[col])) return 0;
+      //console.log (a.category < b.category);
+      return parseFloat(a[col]) < parseFloat(b[col]) ? -1 : 1;
+    });
+
+  }  
   
   // Initially, this is always defined as a monthly amount for the current month.
   // There will be a Category Limits button below the category drop down.
