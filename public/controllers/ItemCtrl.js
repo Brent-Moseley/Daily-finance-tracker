@@ -183,12 +183,36 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     console.log ('removing: ' + id);
     itemService.delete (id, $scope.key)
       .then(function(data) {
+        $scope.closeDeletePopup();
         $scope.getAll();
         $scope.calculateCatTotal($scope.selectedCat);
       }, function(err) {
         console.log (' Error in remove');
         console.log(err);
       });
+  }
+
+  $scope.deleteItemNote = '';
+  $scope.deleting = false;
+  $scope.deleteId = 0;
+  $scope.requestedDelete = function (note, id) {
+    $scope.deleteItemNote = note;
+    $scope.deleteId = id;
+    $('#deleteModal').foundation('reveal', 'open');
+  }
+
+  $scope.confirmedDelete = function () {
+    $scope.deleting = true;
+    $scope.remove($scope.deleteId);
+  }
+
+  $scope.closeDeletePopup = function () {
+    $scope.deleting = false;
+    $('#deleteModal').foundation('reveal', 'close');
+  }
+
+  $scope.closeCategoryPopup = function () {
+    $('#deleteModal').foundation('reveal', 'close');
   }
 
 
