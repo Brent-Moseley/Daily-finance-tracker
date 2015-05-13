@@ -1,4 +1,5 @@
 <!-- public/views/item.html -->
+<!-- Foundation Cheat Sheet:  https://princessdesign.net/foundation-cheat-sheet/ -->
 
 <div class="panel content large-8 medium-10 small-12 small-centered large-centered radius" 
      style="padding: 0.75rem;">
@@ -15,7 +16,7 @@
       <div ng-show="viewStartDate != 'none'">View Range: {{viewStartDate}} to {{viewEndDate}}</div>
     </div>
   </div>  
-  <div id="show-block" ng-show="showDateRange">
+  <div id="show-block" ng-show="showDateRange" class="panel">
     <div class="row">
       <div class="small-2 medium-2 large-2 columns">
         Start Date:
@@ -37,60 +38,38 @@
   </div>
   <table>
     <!-- Table for larger devices, create a smaller one for small devices that omits remove and notes -->
-    <th width="120" class="hand-clickable" ng-click="columnSort('date');">Date</th>
-    <th width="100" class="hand-clickable" ng-click="columnSort('category');">Category</th> 
-    <th width="100" class="hand-clickable" ng-click="columnSortNum('cost');">Cost</th>
-    <th width="350">Notes</th>
-    <th width="50">Remove</th>
-    <tr ng-repeat="item in items track by $index">
-      <!-- <td>{{item.date}}</td> -->
-      <td>
-        <input class="calendar" type="text" ng-model="item.date" ui-date="dateOptions" grid="true"/> 
-      </td>
-      <td>
-        <select ng-model="item.category" ng-change="update(item._id, item)">
-          <option ng-repeat="option in categories">{{option}}</option>
-        </select>
-      </td>
-      <!-- <td>{{item.cost}}</td> -->
-       <td>
-        <input type="text" ng-model="item.cost" filter-element="numberCurrency" ng-change="updateNote(item._id, $index, true)" class="line-input">
-      </td>     
-      <td>
-        <input type="text" ng-model="item.note" ng-change="updateNote(item._id, $index, false)" class="line-input">
-      </td>
+    <thead>
+      <tr>
+        <th width="120" class="hand-clickable" ng-click="columnSort('date');">Date</th>
+        <th width="100" class="hand-clickable" ng-click="columnSort('category');">Category</th> 
+        <th width="100" class="hand-clickable" ng-click="columnSortNum('cost');">Cost</th>
+        <th class="hide-for-small" width="350">Notes</th>
+        <th class="hide-for-small" width="50">Remove</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="item in items track by $index">
+        <!-- <td>{{item.date}}</td> -->
+        <td>
+          <input class="calendar" type="text" ng-model="item.date" ui-date="dateOptions" grid="true"/> 
+        </td>
+        <td>
+          <select ng-model="item.category" ng-change="update(item._id, item)">
+            <option ng-repeat="option in categories">{{option}}</option>
+          </select>
+        </td>
+        <!-- <td>{{item.cost}}</td> -->
+         <td>
+          <input type="text" ng-model="item.cost" filter-element="numberCurrency" ng-change="updateNote(item._id, $index, true)" class="line-input">
+        </td>     
+        <td class="hide-for-small">
+          <input type="text" ng-model="item.note" ng-change="updateNote(item._id, $index, false)" class="line-input">
+        </td>
 
-      <td class="text-center"><a href="" ng-click="requestedDelete(item.note, item._id)">X</a></td>
-    </tr>
+        <td class="text-center hide-for-small"><a href="" ng-click="requestedDelete(item.note, item._id)">X</a></td>
+      </tr>
+    </tbody>
   </table>
-  <div class="row">
-    <div class="small-2 medium-2 large-2 columns">
-      Page Total:
-    </div>
-    <div class="small-2 medium-2 large-2 columns">
-      {{viewTotal | currency}} 
-    </div>
-    <div class="small-3 medium-3 large-3 columns">
-      Category Total this Page:
-    </div>
-    <div class="small-3 medium-3 large-3 columns">
-      <select ng-model="selectedCat" ng-change="calculateCatTotal(selectedCat)">
-        <option ng-repeat="option in categories">{{option}}</option>
-      </select>
-    </div>
-    <div class="small-2 medium-2 large-2 columns">
-      {{catTotal | currency}}
-    </div>    
-  </div>             
-  <div class="row">
-    <div class="small-7 medium-7 large-7 columns">
-    </div>
-    <div class="small-5 medium-5 large-5 columns">
-      <a ng-show="!loadingCategories" ng-click="openCategoryPopup();" id="category-button" class="button postfix" style="width: 10rem;">Category Limits</a>
-      <img ng-show="loadingCategories" src="images/loading-1.gif" />
-    </div>
-  </div>
-  <br>
   Add a new expense (enter dollar value, then add details above):<br>
   <div class="row">
     <div class="large-10 columns">
@@ -104,7 +83,35 @@
         </div>
       </div>
     </div>
-  </div>  
+  </div> 
+  <div class="row panel">
+    <div class="small-3 medium-3 large-3 columns">
+      Page Total:
+    </div>
+    <div class="small-3 medium-3 large-3 columns">
+      {{viewTotal | currency}} 
+    </div>
+    <div class="small-6 medium-6 large-6 columns">
+    </div>    
+  </div>
+
+  <div class="row panel">
+    <div class="small-3 medium-3 large-3 columns hide-for-small">
+      Category Total this Page:
+    </div>
+    <div class="small-3 medium-3 large-3 columns">
+      <select ng-model="selectedCat" ng-change="calculateCatTotal(selectedCat)">
+        <option ng-repeat="option in categories">{{option}}</option>
+      </select>
+    </div>
+    <div class="small-1 medium-2 large-2 columns">
+      {{catTotal | currency}}
+    </div> 
+    <div class="small-5 medium-4 large-4 columns">
+      <a ng-show="!loadingCategories" ng-click="openCategoryPopup();" id="category-button" class="button postfix" style="width: 8rem;">Category Limits</a>
+      <img ng-show="loadingCategories" src="images/loading-1.gif" />
+    </div>       
+  </div>             
 
   <!-- DELETE CONFIRMATION POPUP, MAKE INTO DIRECTIVE LATER -->
   <div id="deleteModal" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
