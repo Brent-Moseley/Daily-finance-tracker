@@ -72,7 +72,7 @@ td .line-input {
   display: inline-block;
 }
 
-#myModal .modal-input {
+#myModal .modal-input, #pwd-update-modal .modal-input {
   width: 10rem; 
   display: inline; 
   margin-right: 0.5rem;

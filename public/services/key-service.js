@@ -84,6 +84,33 @@ app.factory('keyService', ['$http', '$q', function($http, $q) {
             // something went wrong
             return $q.reject(response.data);
           });                
+    },
+
+    updateAccount : function (userName, userPwd, newPwd, callback) {
+      console.log ('in user update: ' + userName);
+      var data = JSON.stringify ({
+        'userName': userName, 
+        'pwd': userPwd,
+        'newPwd': newPwd
+      });
+      return $http({
+        method: 'PUT',
+        url: '/api/users',
+        data: data
+      })
+        .then(function(response) {
+          if (typeof response.data != undefined) {
+            callback(response.data);
+          } else {
+            // invalid response
+            return $q.reject(response.data);
+          }
+
+          }, function(response) {
+            // something went wrong
+            return $q.reject(response.data);
+          });                
     }
+
   };
 }]);

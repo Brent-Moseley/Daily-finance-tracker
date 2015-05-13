@@ -255,6 +255,29 @@ module.exports = function(app) {
     });
   });
 
+  // route to handle update
+  app.put('/api/users', function(req, res) {
+    console.log (' in update password');
+    console.log (req.body);
+    console.log (req.body.userName);
+
+    // First just see if we can locate the user with the right user name and pwd.
+    // If so, do an update with the new pwd
+    User.findOne({'userName': req.body.userName}).where('pwd').equals(req.body.pwd)
+      .exec(function(err, user) {
+        console.log ('Found this:' + user);
+        if (err || !user || user.length == 0)
+            res.send("false");
+
+        else {
+          user.pwd = req.body.newPwd;
+          user.save();
+          console.log ('Updating to: ' + req.body.newPwd);
+          res.json("true"); // return all items in JSON format
+        }
+      });
+  });   
+
   // frontend routes =========================================================
   // route to handle default requests
   app.get('*', function(req, res) {
@@ -268,7 +291,7 @@ module.exports = function(app) {
 // *****  Notes *****
 // good doc:  https://www.packtpub.com/books/content/understanding-express-routes
 //  http://stackoverflow.com/questions/17315915/angularjs-unknown-provider-configuring-httpprovider
-// Mongoose queries:  http://mongoosejs.com/docs/queries.html
+// Mongoose queries:  http://mongoosejs.com/docs/queries.html    ****
 // http://docs.mongodb.org/manual/tutorial/query-documents/
 // http://docs.mongodb.org/manual/reference/operator/query/where/
 // http://mongoosejs.com/docs/queries.html
