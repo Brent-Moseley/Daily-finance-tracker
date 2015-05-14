@@ -13,26 +13,26 @@
     <div class="row">
       <div class="small-10 medium-10 large-10 columns">
         <div class="row">
-          <div class="small-4 medium-4 large-4 columns">
+          <div class="small-6 medium-4 large-4 columns">
             <input type="text" placeholder="User Name" ng-model="userName">
           </div>
-          <div class="small-4 medium-4 large-4 columns">
+          <div class="small-6 medium-4 large-4 columns">
             <input type="password" placeholder="Password" ng-model="pwd">
           </div>          
-          <div class="small-4 medium-4 large-4 columns" >
+          <div class="small-10-centered medium-4 large-4 columns" >
             <a ng-show="!loading" ng-disabled="!agree || loading" ng-click="attemptlogin(userName, pwd);"class="button postfix">Log In</a>
             <img ng-show="loading" src="images/loading-1.gif" />
           </div>
         </div>
         <div class="row">
-          <div class="small-4 medium-4 large-4 columns" >
+          <div class="small-6 medium-4 large-4 columns" >
             <a ng-disabled="!agree || loading" ng-click="createAccount();"class="button postfix">Create a New Account</a>
           </div>    
                   
-          <div class="small-4 medium-4 large-4 columns" >
+          <div class="small-6 medium-4 large-4 columns" >
             <a ng-disabled="!agree || loading" ng-click="updateAccount();"class="button postfix">Update Password</a>
           </div>
-          <div class="small-4 medium-4 large-4 columns">
+          <div class="small-0 medium-4 large-4 columns">
           </div>  
         </div> 
 

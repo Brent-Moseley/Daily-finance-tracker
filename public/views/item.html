@@ -18,21 +18,23 @@
   </div>  
   <div id="show-block" ng-show="showDateRange" class="panel">
     <div class="row">
-      <div class="small-2 medium-2 large-2 columns">
+      <div class="small-6 medium-2 large-2 columns">
         Start Date:
       </div>
-      <div class="small-2 medium-2 large-2 columns">
+      <div class="small-7 medium-3 large-3 columns">
         <input class="calendar" type="text" ng-model="startDate" ui-date="dateOptions"/>
       </div>
-      <div class="small-2 medium-2 large-2 columns">
+      <div class="small-6 medium-2 large-2 columns">
         End Date:
       </div>
-      <div class="small-2 medium-2 large-2 columns">
+      <div class="small-7 medium-3 large-3 columns">
         <input class="calendar" type="text" ng-model="endDate" ui-date="dateOptions"/>
       </div>
-      <div class="small-2 medium-2 large-2 columns">
+      <div class="small-7 medium-2 large-2 columns">
         <a ng-show="!updatingDates" ng-click="dateFilter(startDate, endDate)" class="button postfix show">Show</a>
         <img ng-show="updatingDates" src="images/loading-1.gif" />
+      </div>
+      <div class="small-5 show-for-small columns">
       </div>
     </div>
   </div>
@@ -99,7 +101,7 @@
     <div class="small-3 medium-3 large-3 columns hide-for-small">
       Category Total this Page:
     </div>
-    <div class="small-3 medium-3 large-3 columns">
+    <div class="small-5 medium-3 large-3 columns">
       <select ng-model="selectedCat" ng-change="calculateCatTotal(selectedCat)">
         <option ng-repeat="option in categories">{{option}}</option>
       </select>
