@@ -2,8 +2,7 @@
 
 // These are the routes in the Express middleware.  Everything in app
 // is the Express / Mongo / Node backend.  Everything in public is the Angular front end.
-// Identity.  Deep love - I love coding, I love design and architecture!  And I love 
-//   all the rewards of doing it!
+
 
 // Require in the models
 var Item = require('./models/item');
