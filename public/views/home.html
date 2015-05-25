@@ -9,6 +9,19 @@
       NOTE: landscape mode is recommended when viewing this site on mobile.
     </p>
 
+    <div class="row">
+      <div class="large-10 columns">
+        <div class="row">
+          <div class="small-2 medium-1 large-1 columns">
+            <input type="checkbox" ng-model="agree">
+          </div>
+          <div class="small-10 medium-11 large-11 columns">
+            I acknowledge and agree to the Terms of Use (see below).
+          </div>          
+        </div>
+      </div>
+    </div>      
+
     <!-- For larger devices.  Create a different div for small devices below -->
     <div class="row">
       <div class="small-10 medium-10 large-10 columns">
@@ -30,7 +43,7 @@
           </div>    
                   
           <div class="small-6 medium-4 large-4 columns" >
-            <a ng-disabled="!agree || loading" ng-click="updateAccount();"class="button postfix">Update Password</a>
+            <a ng-disabled="!agree || loading" ng-click="updateAccount();"class="button postfix">Change Password</a>
           </div>
           <div class="small-0 medium-4 large-4 columns">
           </div>  
@@ -38,27 +51,14 @@
 
         NOTE: When you create a new account, you will be prompted to create a user ID and a password for yourself.  User ID and password must be at least 6 characters each, using at least one number or special character in your password is recommended.
       </div>
-    </div> 
+    </div>    
 
-    <div class="row">
-      <div class="large-10 columns">
-        <div class="row">
-          <div class="small-2 medium-1 large-1 columns">
-            <input type="checkbox" ng-model="agree">
-          </div>
-          <div class="small-10 medium-11 large-11 columns">
-            I acknowledge and agree to the terms of use below:
-          </div>          
-        </div>
-      </div>
-    </div>     
-
-    <br><strong>Disclaimer:</strong><br>
+    <br><strong>Terms of Use:</strong><br>
     Daily Financial Tracker web app is a no-charge tool for anyone to use to help keep track of and optimize their daily finances.  Note that this is NOT a professional budgeting program, accounting package, or tax program.  It is provided as-is for your free use.  The intent of this app is to keep your data anonymous, letting you choose a user ID and a password. Please keep your data anonymous by NOT entering in any personally identifying information, such as full names, addresses, account numbers, etc. An export button is provided so you can backup your data to your local drive and / or import into excel or an accounting package (csv format). Backing up is highly recommended at least every month.
     <br><br>
     <div class="row">
-      <div class="small-5 medium-4 large-4 columns">
-        <a ng-click="help();"class="button postfix">Help! I have issues with my account.</a>
+      <div class="small-3 medium-3 large-3 columns">
+        <a ng-click="help();" title="Help! I have issues with my account." class="button postfix">Help!</a>
       </div>
     </div>
 
@@ -98,3 +98,9 @@
   </div>  
 
 </div>
+
+<!-- 
+tan
+BurlyWood 
+
+Just focus and get in the zone!!  -->

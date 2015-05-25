@@ -86,7 +86,7 @@
       </div>
     </div>
   </div> 
-  <div class="row panel">
+  <div id="page-total" class="row panel">
     <div class="small-3 medium-3 large-3 columns">
       Page Total:
     </div>
@@ -97,7 +97,7 @@
     </div>    
   </div>
 
-  <div class="row panel">
+  <div id="cat-total" class="row panel">
     <div class="small-3 medium-3 large-3 columns hide-for-small">
       Category Total this Page:
     </div>
@@ -109,8 +109,8 @@
     <div class="small-1 medium-2 large-2 columns">
       {{catTotal | currency}}
     </div> 
-    <div class="small-5 medium-4 large-4 columns">
-      <a ng-show="!loadingCategories" ng-click="openCategoryPopup();" id="category-button" class="button postfix" style="width: 8rem;">Category Limits</a>
+    <div class="small-4 medium-4 large-4 columns">
+      <a ng-show="!loadingCategories" ng-click="openCategoryPopup();" id="category-button" class="button postfix" style="width: 7rem;">Category Limits</a>
       <img ng-show="loadingCategories" src="images/loading-1.gif" />
     </div>       
   </div>             
