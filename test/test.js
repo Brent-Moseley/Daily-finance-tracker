@@ -58,6 +58,5 @@ describe('User', function(){
 })
 
 
-//   http://stackoverflow.com/questions/19298118/what-is-the-role-of-describe-in-mocha
 //   http://chaijs.com/guide/styles/#expect
 
