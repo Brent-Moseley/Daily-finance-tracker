@@ -251,6 +251,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   $scope.timerUpdateNote = false;
   $scope.updatingCost = false;
   $scope.updateNote = function (id, index, isCost) {
+    // Updates both Note and Cost columns.
     if ($scope.updatingCost && !isCost) updatePageTotals ($scope.items);  // Just went from updating cost to
                                                             // updating notes, re-calculate page total
     $scope.updatingCost = isCost;
