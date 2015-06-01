@@ -11,6 +11,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   $scope.loadingCategories = false;
   $scope.recalcCategories = false;
   $scope.updatingDates = false;
+  $scope.mainTableLoading = false;
   $scope.dateOptions = {
       // options -  http://api.jqueryui.com/datepicker/#option-minDate
       // minDate: 0,
@@ -21,6 +22,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   };
 
   $scope.getAll = function() {
+    $scope.mainTableLoading = true;
     itemService.get($scope.key, $scope.dateFilterEnabled, $scope.startDate, $scope.endDate)
       .then(function(data) {
         // promise fulfilled
@@ -34,6 +36,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
           console.log ('data read:');
           console.log ($scope.items);
           updatePageTotals (data);
+          $scope.mainTableLoading = false;
           $scope.login = keyService.getLogin();   // get the name of current user
         }
         $scope.newOne = '';
@@ -175,6 +178,31 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     $('#categoryModal').foundation('reveal', 'close');
   }
 
+  $scope.categoryId = 0;
+  $scope.openCatDeleteConfirm = function (id) {
+    $scope.categoryId = id;
+    $('#deleteCategoryModal').foundation('reveal', 'open');
+  }
+
+  $scope.closeCatDeletePopup = function () {
+    $('#deleteCategoryModal').foundation('reveal', 'close');
+  }
+
+  $scope.removeCategory = function () {
+    console.log ('removing category: ' + id);
+    $('#deleteCategoryModal').foundation('reveal', 'close');
+    itemService.deleteCat ($scope.categoryId, $scope.key)
+      .then(function(data) {
+        //$scope.closeCatDeletePopup();
+        //$scope.getAll();
+        $scope.openCategoryPopup();  // Maybe
+        $scope.calculateCatTotal($scope.selectedCat);
+      }, function(err) {
+        console.log (' Error in remove category');
+        console.log(err);
+      });    
+  }  
+
   $scope.updateCategory = function (category) {
     itemService.updateCategory ({
       name: category.name,
@@ -183,8 +211,12 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     }, $scope.key)
     .then (function (data) {
       // returns the new ID, if there is one.
-      console.log (' newly assigned ID: ' + data);
-      if (data) category.id = data;
+      console.log (' newly assigned ID: ' + data);   //???
+      if (data) category.id = data;    /// Should never have this....
+      angular.forEach ($scope.loadedCategories, function (cat) {
+        if (cat.name == category.name) cat.limit = category.limit;
+      });
+      $scope.recalculate ();
     });
   }
 

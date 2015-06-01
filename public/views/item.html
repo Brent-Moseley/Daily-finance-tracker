@@ -38,6 +38,7 @@
       </div>
     </div>
   </div>
+  <img ng-show="mainTableLoading" src="images/loading-1.gif" />
   <table>
     <!-- Table for larger devices, create a smaller one for small devices that omits remove and notes -->
     <thead>
@@ -68,7 +69,8 @@
           <input type="text" ng-model="item.note" ng-change="updateNote(item._id, $index, false)" class="line-input">
         </td>
 
-        <td class="text-center hide-for-small"><a href="" ng-click="requestedDelete(item.note, item._id)">X</a></td>
+        <td class="text-center hide-for-small"><a href="" ng-click="requestedDelete(item.note, item._id)">X</a>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -115,7 +117,7 @@
     </div>       
   </div>             
 
-  <!-- DELETE CONFIRMATION POPUP, MAKE INTO DIRECTIVE LATER -->
+  <!-- DELETE CONFIRMATION POPUP, MAKE INTO DIRECTIVE LATER, CUSTOM MESSAGES, ONE DIRECTIVE FOR ALL DELETE CONFIRMATIONS -->
   <div id="deleteModal" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
     <h3 id="modalTitle">Confirm Delete:</h3>
     Are you sure you want to delete this expense? {{deleteItemNote}}
@@ -134,6 +136,25 @@
     </p> 
   </div>  
 
+ <!-- DELETE CONFIRMATION POPUP, MAKE INTO DIRECTIVE LATER, CUSTOM MESSAGES, ONE DIRECTIVE FOR ALL DELETE CONFIRMATIONS -->
+  <div id="deleteCategoryModal" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+    <h3 id="modalTitle">Confirm Delete:</h3>
+    Are you sure you want to delete this category? {{deleteCategoryNote}}<br>
+    You cannot undo this later.
+     <p>
+      <div class="row">
+        <div class="small-4 medium-4 large-4 columns">
+          <a ng-click="closeCatDeletePopup();"class="button postfix" style="width: 7rem;">Cancel</a>
+        </div>
+        <div class="small-4 medium-4 large-4 columns">
+        </div>        
+        <div class="small-4 medium-4 large-4 columns">
+          <a ng-show="!deleting" ng-click="removeCategory();"class="button postfix" style="width: 7rem;">Delete</a>
+          <img ng-show="deleting" src="images/loading-1.gif" />
+        </div>     
+      </div>
+    </p> 
+  </div> 
 
   <!-- CATEGORY POPUP, MAKE INTO DIRECTIVE LATER -->
   <div id="categoryModal" class="reveal-modal medium" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
@@ -143,7 +164,7 @@
       <th width="120">Category Name</th>
       <th width="100">Monthly Limit</th> 
       <th width="100">Current Month Total</th>
-      <!-- <th width="50">Remove</th> -->
+      <th width="50" class="hide-for-small">Remove</th>
       <tr ng-repeat="category in modalCategories track by $index">
         <!-- <td>{{item.date}}</td> -->
         <td>
@@ -155,14 +176,14 @@
         <td ng-class="category.highlight">
           {{category.currentTotal | currency}}
         </td>
-<!--         <td class="text-center"><a href="" ng-click="remove(item._id)">X</a></td>
- -->  </tr>
+        <td class="text-center hide-for-small"><a href="" ng-click="openCatDeleteConfirm(category._id)">X</a></td>
+  </tr>
     </table>
    
     <p>
       <div class="row">
         <div class="small-2 medium-3 large-3 columns">
-          <a ng-show="!recalcCategories" ng-click="openCategoryPopup();"class="button postfix" style="width: 7rem;">Re-calculate</a>
+          <a ng-show="!recalcCategories" ng-click="addCategory();"class="button postfix" style="width: 7rem;">Add</a>
           <img ng-show="recalcCategories" src="images/loading-1.gif" />
         </div>
         <div class="small-2 medium-3 large-3 columns">
@@ -175,3 +196,5 @@
 
     <a class="close-reveal-modal" aria-label="Close">&#215;</a>
   </div></div>
+
+<!--  I am awesome and I am going to rock this!! -->
