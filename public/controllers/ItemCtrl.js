@@ -2,7 +2,7 @@
 app.controller('ItemController', function($scope, itemService, keyService, $timeout, $route) {
   $scope.tagline = 'Enter your daily expenses as you go about your day.';
   // Eventually create a user specific Mongo document for custom categories
-  $scope.categories = ['Auto', 'Bills', 'Career', 'Cloths', 'Dates', 'Debt', 'Education', 'Fun', 'Gas', 'Giving','Grocery', 'Home', 'Insurance', 'Medical', 'Mortgage', 'Misc', 'Phone', 'Rent', 'Restaurant','Savings', 'Training', 'Utilities' ];
+  //$scope.categories = ['Auto', 'Bills', 'Career', 'Cloths', 'Dates', 'Debt', 'Education', 'Fun', 'Gas', 'Giving','Grocery', 'Home', 'Insurance', 'Medical', 'Mortgage', 'Misc', 'Phone', 'Rent', 'Restaurant','Savings', 'Training', 'Utilities' ];
   $scope.viewTotal = $scope.catTotal = 0;
   $scope.selectedCat = 'none';
   $scope.key = keyService.getKey();
@@ -140,8 +140,19 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     console.log ('re-calculating');
     $scope.modalCategories = [];
 
+    // TODO:
+    // Need to re-write this algorithm:  instead of adding up totals from the items in the beginning,
+    // simply make an object with properties being the name of each category loaded from the back end.
+    // Then go through the entire list of items (which will be from just this month) adding up each item
+    // into the appropriate category. 
+    // Will need to do some refactoring in the near future to break this code up into smaller files and put
+    // a lot more logic into the service. Also break up the routes.js on the back end up into feature based
+    // folders.  Do same when I make directives for the UI. 
+    // I will need a popup to take an input for adding a category, then a back-end call to add, then a category
+    // popup reload.
+    // Will also need to finish delete with a popup result message, then category popup reload. 
     angular.forEach ($scope.categories, function (cat) {
-      // Go through each category, see if you can find current category in the object
+      // Go through each default category, see if you can find current category in the object
       // returned from the back end.  If so, push onto the array its data, otherwise,
       // make defaults.
       var total = $scope.totals[cat];
@@ -179,8 +190,10 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   }
 
   $scope.categoryId = 0;
-  $scope.openCatDeleteConfirm = function (id) {
+  $scope.openCatDeleteConfirm = function (id, name) {
     $scope.categoryId = id;
+    $scope.deleteCategoryNote = name;
+    $scope.closeCategoryPopup();
     $('#deleteCategoryModal').foundation('reveal', 'open');
   }
 
@@ -189,17 +202,19 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   }
 
   $scope.removeCategory = function () {
-    console.log ('removing category: ' + id);
+    console.log ('removing category: ' + id + ' ' + $scope.deleteItemNote);
     $('#deleteCategoryModal').foundation('reveal', 'close');
     itemService.deleteCat ($scope.categoryId, $scope.key)
       .then(function(data) {
         //$scope.closeCatDeletePopup();
         //$scope.getAll();
+        console.log ('Return from delete category: ' + data);
         $scope.openCategoryPopup();  // Maybe
         $scope.calculateCatTotal($scope.selectedCat);
       }, function(err) {
-        console.log (' Error in remove category');
-        console.log(err);
+        console.log(err.data);
+        // if error, data will contain a message about how many Items need to be updated to
+        // another category first.
       });    
   }  
 
@@ -226,7 +241,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
       total += (parseFloat(item.cost) * 100);
     });
     $scope.viewTotal = total / 100;
-    $scope.calculateCatTotal();
+    $scope.calculateAllCatTotal(data);
   } 
 
   $scope.addOne = function (newOne) {
@@ -333,6 +348,13 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
       if (item.category == selectedCat) total += (parseFloat(item.cost) * 100);
     });
     $scope.catTotal = total / 100;
+  }
+
+  $scope.calculateAllCatTotal = function (items) {
+    itemService.getCategories ($scope.key)
+      .then (function (dataCat) {
+        debugger;
+      });
   }
 
   $scope.getAll();  // Show items when viewing first time

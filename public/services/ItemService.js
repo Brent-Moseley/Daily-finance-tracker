@@ -158,7 +158,24 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
             method: "DELETE",
             headers: {'key': key}
           });
-        }
+        },
+
+        // call to DELETE a category
+        deleteCat : function(id, key) {
+          console.log (' in service delete category ' + id + ' ' + key);
+          return $http({
+            url: '/api/categories/&id=' + id,
+            method: "DELETE",
+            headers: {'key': key}
+          })
+          .then(function(response) {
+            var numLeft = parseInt(response.data);
+            return numLeft;
+          });         
+          // Need .then to handle response.  If fail, tell user they must find those items currently
+          // under the category and re-assign.
+          // Otherwise, if success, the category has been deleted.
+        }       
     }       
 }]);
 

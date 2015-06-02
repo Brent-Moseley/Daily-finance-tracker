@@ -73,6 +73,41 @@ module.exports = function(app) {
     });
   }); 
 
+  // route to handle delete
+  app.delete('/api/categories/:id', function(req, res) {
+    console.log ('****  in delete category');
+    console.log (req.params.id.substring(4));
+    Category.findById(req.params.id.substring(4), function (err, cat) {
+      if (!err) {
+        console.log ('Found: ' + cat.name);
+        Item.find({'category' : cat.name})
+          .where('key').equals(req.headers.key)
+          .exec(function (err, items) {
+            if (err) console.log ('Unable to search for items with in this category.');
+            else {
+              console.log ('%d Items were found under this category.', items.length);
+              //console.log (items);
+              //if (items.length == 0) {
+              //   Category.findById(req.params.id.substring(4)).remove();
+              //   res.status(200).send('/ DELETE OK');
+              // }
+              res.status(403).send('Items remaining in this category: ' + items.length.toString());
+            }
+        });
+      }
+    });
+    //  Need to do a lookup on all items that are using the category.
+    //  If > 0, send a message asking the user to re-assign all those before deleting the
+    //  category (in a future version, do this for them).  
+
+    // id value will come in this format: "&id=5474bd2f118b2d00008b1ab8"
+    // strip off the first 4 characters
+    // Category.findById(req.params.id.substring(4)).remove(function (err) {
+    //   if (err) { console.error(err); res.send('Unable to Delete category'); }
+    //   else { console.log ('successful delete'); res.send('/ DELETE OK'); }
+    // })
+  });  
+
   // **********  Items stuff **************************
   //
   app.get('/items_as_admin', function (req, res) {
