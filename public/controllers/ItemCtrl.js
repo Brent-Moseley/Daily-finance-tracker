@@ -11,6 +11,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   $scope.loadingCategories = false;
   $scope.recalcCategories = false;
   $scope.updatingDates = false;
+  $scope.mainTableLoading = false;
   $scope.dateOptions = {
       // options -  http://api.jqueryui.com/datepicker/#option-minDate
       // minDate: 0,
@@ -21,6 +22,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   };
 
   $scope.getAll = function() {
+    $scope.mainTableLoading = true;
     itemService.get($scope.key, $scope.dateFilterEnabled, $scope.startDate, $scope.endDate)
       .then(function(data) {
         // promise fulfilled
@@ -34,6 +36,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
           console.log ('data read:');
           console.log ($scope.items);
           updatePageTotals (data);
+          $scope.mainTableLoading = false;
           $scope.login = keyService.getLogin();   // get the name of current user
         }
         $scope.newOne = '';
