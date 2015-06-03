@@ -22,6 +22,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   };
 
   $scope.getAll = function() {
+    debugger;
     $scope.mainTableLoading = true;
     itemService.get($scope.key, $scope.dateFilterEnabled, $scope.startDate, $scope.endDate)
       .then(function(data) {
@@ -35,7 +36,9 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
           $scope.items = data;
           console.log ('data read:');
           console.log ($scope.items);
+          createAllCategories ($scope.key);
           updatePageTotals (data);
+          debugger;    // Do not go past here.
           $scope.mainTableLoading = false;
           $scope.login = keyService.getLogin();   // get the name of current user
         }
@@ -45,6 +48,12 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
         console.log(err);
       });
       // Perhaps add some error handling here.
+  }
+
+  var createAllCategories = function (key) {
+    keyService.createAllCategories (key);
+    debugger;
+    // Wait for back end. 
   }
 
   $scope.sortDirection = {date: -1, category: -1, cost: -1};
