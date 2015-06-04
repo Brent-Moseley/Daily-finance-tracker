@@ -36,7 +36,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
           $scope.items = data;
           console.log ('data read:');
           console.log ($scope.items);
-          createAllCategories ($scope.key);
+          //createAllCategories ($scope.key);
           updatePageTotals (data);
           debugger;    // Do not go past here.
           $scope.mainTableLoading = false;
@@ -51,6 +51,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   }
 
   var createAllCategories = function (key) {
+    debugger;
     keyService.createAllCategories (key);
     debugger;
     // Wait for back end. 
@@ -96,7 +97,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     $scope.loadingCategories = $scope.recalcCategories = true;
     var now = new Date();
  
-    var startDate = moment([now.getFullYear(), now.getMonth()]);
+    var startDate = moment([now.getFullYear(), now.getMonth() - 1]);  // remove -1
 
     // Clone the value before .endOf()
     var endDate = moment(startDate).endOf('month');
@@ -104,10 +105,11 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     startDate = startDate.format('L');
     endDate = endDate.format('L');
     
-    $scope.totals = $scope.categories.reduce(function(o, v, i) {
-      o[v] = 0;
+    $scope.totals = $scope.loadedCategories.reduce(function(o, v, i) {
+      o[v.name] = 0;
       return o;
     }, {}); 
+    debugger;
     // reduce down set of expense items documents to those within the current month
     // set up category total array
     // go through all transactions, adding costs into each array "bucket"
@@ -122,25 +124,28 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
           // Create summations for each category in totals
           angular.forEach (data, function (item) {
             $scope.totals[item.category] += (parseFloat(item.cost) * 100);
+            console.log ('  Adding to: ' + item.category);
           });
-          angular.forEach ($scope.categories, function (total) {
-            $scope.totals[total] = $scope.totals[total] / 100;
+          angular.forEach ($scope.loadedCategories, function (total) {
+            $scope.totals[total.name] = $scope.totals[total.name] / 100;
+             console.log ('  Finalizing: ' + total.name);
           });
           console.log ('Totals:');
           console.log ($scope.totals);
+          debugger;
 
-          itemService.getCategories ($scope.key)
-            .then(function (data2) {
-              $scope.loadedCategories = data2;
-              console.log ('Categories came back as:');
-              console.log (data2);
+          // itemService.getCategories ($scope.key)     // Unnecessary, already have these. 
+          //   .then(function (data2) {
+          //     $scope.loadedCategories = data2;
+          //     console.log ('Categories came back as:');
+          //     console.log (data2);
 
               $scope.recalculate();
               if (!$('#categoryModal').hasClass('open')) $('#categoryModal').foundation('reveal', 'open');
               $scope.loadingCategories = $scope.recalcCategories = false;
-            }, function (err) {
-              console.log ('Error in getting category data:' + err);
-            });
+            // }, function (err) {
+            //   console.log ('Error in getting category data:' + err);
+            // });
         }
       });
   }
@@ -160,30 +165,32 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     // I will need a popup to take an input for adding a category, then a back-end call to add, then a category
     // popup reload.
     // Will also need to finish delete with a popup result message, then category popup reload. 
-    angular.forEach ($scope.categories, function (cat) {
+    angular.forEach ($scope.loadedCategories, function (cat) {
+      //debugger;
       // Go through each default category, see if you can find current category in the object
       // returned from the back end.  If so, push onto the array its data, otherwise,
       // make defaults.
-      var total = $scope.totals[cat];
+      var total = $scope.totals[cat.name];
       var limit = 
           id = 0;
       var css = 'green';    // Default to green
-          console.log ('Looking for category: ' + cat);
+      //     console.log ('Looking for category: ' + cat);
 
-      angular.forEach ($scope.loadedCategories, function (datacat) {
-        if (datacat.name == cat) {
-          console.log ('   found, adding total:' + $scope.totals[datacat.name]);
-          console.log ('   Adding limit of: ' + datacat.limit);
-          limit = datacat.limit;
+      // angular.forEach ($scope.loadedCategories, function (datacat) {
+      //   if (datacat.name == cat) {
+          console.log ('    adding total:' + total);
+          console.log ('   Adding limit of: ' + cat.limit);
+          limit = cat.limit;
           var percentLeft = (limit - total) / limit * 100;
+          if (!cat.limit || cat.limit == 0) percentLeft = 100;
           if (percentLeft >= 25.01) css = 'green';   // in case of multiple limits for one category - an old bug.
           if (percentLeft < 25.01) css = 'yellow'; 
           if (percentLeft < 10.01) css = 'red';
-          id = datacat._id;
-        }
-      });
+          id = cat._id;
+        //}
+      //});
       $scope.modalCategories.push ({
-        name: cat,
+        name: cat.name,
         currentTotal: total,
         highlight: css,
         limit: limit,
@@ -250,7 +257,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
       total += (parseFloat(item.cost) * 100);
     });
     $scope.viewTotal = total / 100;
-    $scope.calculateAllCatTotal(data);
+    $scope.calculateAllCatTotal();
   } 
 
   $scope.addOne = function (newOne) {
@@ -359,10 +366,10 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     $scope.catTotal = total / 100;
   }
 
-  $scope.calculateAllCatTotal = function (items) {
+  $scope.calculateAllCatTotal = function () {
     itemService.getCategories ($scope.key)
       .then (function (dataCat) {
-        debugger;
+        $scope.loadedCategories = dataCat;
       });
   }
 

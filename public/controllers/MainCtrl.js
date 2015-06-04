@@ -27,6 +27,11 @@ app.controller('MainController', function($scope, keyService, $location) {
 
   }
 
+  $scope.createCategories = function (key) {
+    keyService.createAllCategories (key);
+  }
+
+
   $scope.generateKey = function () {
     //  Key for expense items for a new user.  In the future revision, just grab the _id that
     //  Mongo creates and use that.

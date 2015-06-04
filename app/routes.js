@@ -40,8 +40,8 @@ module.exports = function(app) {
   // route to handle creating new category (app.post)
   app.post('/api/categories', function(req, res) {
     req.body.key = req.headers.key;
+    console.log ('Key is hopefully: ' + req.headers.key);
     var next = new Category(req.body);
-
     console.log ('create new category:');
     console.log (req.header);
     console.log (req.body);

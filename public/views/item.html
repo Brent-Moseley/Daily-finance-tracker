@@ -58,7 +58,7 @@
         </td>
         <td>
           <select ng-model="item.category" ng-change="update(item._id, item)">
-            <option ng-repeat="option in categories">{{option}}</option>
+            <option ng-repeat="option in loadedCategories">{{option.name}}</option>
           </select>
         </td>
         <!-- <td>{{item.cost}}</td> -->
@@ -105,7 +105,7 @@
     </div>
     <div class="small-5 medium-3 large-3 columns">
       <select ng-model="selectedCat" ng-change="calculateCatTotal(selectedCat)">
-        <option ng-repeat="option in categories">{{option}}</option>
+        <option ng-repeat="option in loadedCategories">{{option.name}}</option>
       </select>
     </div>
     <div class="small-1 medium-2 large-2 columns">

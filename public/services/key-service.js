@@ -61,7 +61,7 @@ app.factory('keyService', ['$http', '$q', function($http, $q) {
     },    
 
     createAllCategories : function (key) {
-      var categories = ['Auto', 'Bills', 'Career', 'Cloths', 'Dates', 'Debt', 'Education', 'Fun', 'Gas', 'Giving','Grocery', 'Home', 'Insurance', 'Medical', 'Mortgage', 'Misc', 'Phone', 'Rent', 'Restaurant','Savings', 'Training', 'Utilities' ];
+      var categories = ['Auto', 'Bills', 'Career', 'Clothes', 'Dates', 'Debt', 'Education', 'Fun', 'Gas', 'Giving','Grocery', 'Home', 'Insurance', 'Medical', 'Mortgage', 'Misc', 'Phone', 'Rent', 'Restaurant','Savings', 'Training', 'Utilities' ];
       angular.forEach (categories, function (cat) {
         var data = JSON.stringify ({'name': cat, 'limit': 0});
         $http({
