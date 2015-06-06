@@ -22,7 +22,6 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   };
 
   $scope.getAll = function() {
-    debugger;
     $scope.mainTableLoading = true;
     itemService.get($scope.key, $scope.dateFilterEnabled, $scope.startDate, $scope.endDate)
       .then(function(data) {
@@ -38,7 +37,6 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
           console.log ($scope.items);
           //createAllCategories ($scope.key);
           updatePageTotals (data);
-          debugger;    // Do not go past here.
           $scope.mainTableLoading = false;
           $scope.login = keyService.getLogin();   // get the name of current user
         }
@@ -109,7 +107,6 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
       o[v.name] = 0;
       return o;
     }, {}); 
-    debugger;
     // reduce down set of expense items documents to those within the current month
     // set up category total array
     // go through all transactions, adding costs into each array "bucket"
@@ -132,7 +129,6 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
           });
           console.log ('Totals:');
           console.log ($scope.totals);
-          debugger;
 
           // itemService.getCategories ($scope.key)     // Unnecessary, already have these. 
           //   .then(function (data2) {
@@ -165,28 +161,28 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     // I will need a popup to take an input for adding a category, then a back-end call to add, then a category
     // popup reload.
     // Will also need to finish delete with a popup result message, then category popup reload. 
+    console.log (' Creating modal categories from:');
+    console.log ($scope.loadedCategories);
     angular.forEach ($scope.loadedCategories, function (cat) {
       //debugger;
       // Go through each default category, see if you can find current category in the object
       // returned from the back end.  If so, push onto the array its data, otherwise,
       // make defaults.
       var total = $scope.totals[cat.name];
-      var limit = 
-          id = 0;
+      var limit = 0;
       var css = 'green';    // Default to green
       //     console.log ('Looking for category: ' + cat);
 
       // angular.forEach ($scope.loadedCategories, function (datacat) {
       //   if (datacat.name == cat) {
-          console.log ('    adding total:' + total);
-          console.log ('   Adding limit of: ' + cat.limit);
-          limit = cat.limit;
-          var percentLeft = (limit - total) / limit * 100;
-          if (!cat.limit || cat.limit == 0) percentLeft = 100;
-          if (percentLeft >= 25.01) css = 'green';   // in case of multiple limits for one category - an old bug.
-          if (percentLeft < 25.01) css = 'yellow'; 
-          if (percentLeft < 10.01) css = 'red';
-          id = cat._id;
+      console.log ('    adding total:' + total);
+      console.log ('   Adding limit of: ' + cat.limit);
+      limit = cat.limit;
+      var percentLeft = (limit - total) / limit * 100;
+      if (!cat.limit || cat.limit == 0) percentLeft = 100;
+      if (percentLeft >= 25.01) css = 'green';   // in case of multiple limits for one category - an old bug.
+      if (percentLeft < 25.01) css = 'yellow'; 
+      if (percentLeft < 10.01) css = 'red';
         //}
       //});
       $scope.modalCategories.push ({
@@ -194,11 +190,15 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
         currentTotal: total,
         highlight: css,
         limit: limit,
-        id: id
+        id: cat._id
       });
     });
-    console.log ('Pushing this:');
+    console.log ('Pushing this final:');
     console.log ($scope.modalCategories);
+  }
+
+  $scope.addCategory = function () {
+    
   }
 
   $scope.closeCategoryPopup = function () {
@@ -206,32 +206,83 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   }
 
   $scope.categoryId = 0;
-  $scope.openCatDeleteConfirm = function (id, name) {
+  $scope.deleteErrorMsg = '';
+  $scope.deletePosBG = '';
+  $scope.deleteSuccessMsg = '';
+  $scope.openCatDeleteConfirm = function (id, name, e) {
+    // have clientX, clientY, offsetX, offsetY, pageX, pageY (seems to be absolute positioning), screenX, screenY (relative?)
     $scope.categoryId = id;
+    $scope.deleteErrorMsg = '';
+    $scope.deletePosBG = '';
+    $scope.deleteSuccessMsg = '';
     $scope.deleteCategoryNote = name;
-    $scope.closeCategoryPopup();
-    $('#deleteCategoryModal').foundation('reveal', 'open');
+    $scope.closeText = 'Cancel';
+    var posx = posy = 0;
+    // #categoryModal.top
+    // Great article about mouse positioning:  http://www.quirksmode.org/js/events_properties.html 
+    if (e.pageX || e.pageY)   {
+      posx = e.pageX;
+      posy = e.pageY;
+    }
+    else if (e.clientX || e.clientY)  {
+      posx = e.clientX + document.body.scrollLeft
+        + document.documentElement.scrollLeft;
+      posy = e.clientY + document.body.scrollTop
+        + document.documentElement.scrollTop;
+    }
+    // posx and posy contain the mouse position relative to the document    
+    var modalTop = $('#categoryModal').css('top')
+    modalTop = modalTop.substring(0, modalTop.length-2);   // annoying position fix because relative to modal
+    $scope.deletePos = {'z-index': 10, 'top': posy - modalTop, 'display':'block'};
+    $scope.deletePosBG = {'z-index': 9, 'display':'block'};
+    //$scope.closeCategoryPopup();
+    //$('#deleteCategoryModal').foundation('reveal', 'open');
   }
 
   $scope.closeCatDeletePopup = function () {
-    $('#deleteCategoryModal').foundation('reveal', 'close');
+    //$('#deleteCategoryModal').foundation('reveal', 'close');
+    $scope.deletePos = {'display':'none'};
+    $scope.deletePosBG = {'display':'none'};
+    itemService.getCategories ($scope.key)
+      .then (function (dataCat) {
+        debugger;
+        $scope.loadedCategories = dataCat;
+        $scope.openCategoryPopup();
+      });
   }
-
+modalCategories
   $scope.removeCategory = function () {
     console.log ('removing category: ' + id + ' ' + $scope.deleteItemNote);
-    $('#deleteCategoryModal').foundation('reveal', 'close');
-    itemService.deleteCat ($scope.categoryId, $scope.key)
+
+    itemService.deleteCat (id, $scope.key)
       .then(function(data) {
-        //$scope.closeCatDeletePopup();
-        //$scope.getAll();
-        console.log ('Return from delete category: ' + data);
-        $scope.openCategoryPopup();  // Maybe
-        $scope.calculateCatTotal($scope.selectedCat);
-      }, function(err) {
-        console.log(err.data);
-        // if error, data will contain a message about how many Items need to be updated to
-        // another category first.
-      });    
+        debugger;
+        if (data > 0) {
+          $scope.deleteErrorMsg = data.toString() + ' items are assigned to this category. ';
+          $scope.deleteErrorMsg += 'Please re-assign those items before deleting this category.'
+        }
+        else {
+          $scope.deleteSuccessMsg = 'Category successfully deleted.'
+          $scope.closeText = 'Close';
+          //$scope.closeCatDeletePopup();
+          //$scope.openCategoryPopup();
+        }
+      });
+
+
+    // $('#deleteCategoryModal').foundation('reveal', 'close');
+    // itemService.deleteCat ($scope.categoryId, $scope.key)
+    //   .then(function(data) {
+    //     //$scope.closeCatDeletePopup();
+    //     //$scope.getAll();
+    //     console.log ('Return from delete category: ' + data);
+    //     $scope.openCategoryPopup();  // Maybe
+    //     $scope.calculateCatTotal($scope.selectedCat);
+    //   }, function(err) {
+    //     console.log(err.data);
+    //     // if error, data will contain a message about how many Items need to be updated to
+    //     // another category first.
+    //   });    
   }  
 
   $scope.updateCategory = function (category) {

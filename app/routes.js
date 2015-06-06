@@ -86,12 +86,14 @@ module.exports = function(app) {
             if (err) console.log ('Unable to search for items with in this category.');
             else {
               console.log ('%d Items were found under this category.', items.length);
-              //console.log (items);
-              //if (items.length == 0) {
-              //   Category.findById(req.params.id.substring(4)).remove();
-              //   res.status(200).send('/ DELETE OK');
-              // }
-              res.status(403).send('Items remaining in this category: ' + items.length.toString());
+              if (items.length == 0) {
+                console.log ('OK to delete: ' + req.params.id.substring(4));
+                Category.findById(req.params.id.substring(4)).remove();
+                res.status(200).send('0');
+              }
+              // Returns the number of items left in the category
+              // or 0 if category was deleted.
+              else res.status(200).send(items.length.toString());
             }
         });
       }
