@@ -25,6 +25,29 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
             });
       },
 
+      createCategory : function (key, name) {
+        var data = JSON.stringify ({'name': name, 'limit': 0});
+        return $http({
+          method: 'POST',
+          url: '/api/categories',
+          data: data,
+          headers: {'key': key}
+        })
+          .then(function(response) {
+            debugger;
+            if (typeof response.data != undefined) {
+              return(response.data);
+            } else {
+              // invalid response
+              return $q.reject(response.data);
+            }
+
+            }, function(response) {
+              // something went wrong
+              return $q.reject(response.data);
+            });        
+      },      
+
       updateCategory: function (data, key, callback) {
         //debugger;
         if (data._id == 0) {

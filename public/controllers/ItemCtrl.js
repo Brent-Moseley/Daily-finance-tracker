@@ -23,6 +23,9 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
 
   $scope.getAll = function() {
     $scope.mainTableLoading = true;
+    $scope.deletePos = {'display':'none'};
+    $scope.addPos = {'display':'none'};
+    $scope.deletePosBG = {'display':'none'};
     itemService.get($scope.key, $scope.dateFilterEnabled, $scope.startDate, $scope.endDate)
       .then(function(data) {
         // promise fulfilled
@@ -197,8 +200,39 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     console.log ($scope.modalCategories);
   }
 
-  $scope.addCategory = function () {
-    
+  $scope.catNameAdd = '';
+  $scope.adding = false;
+  $scope.addSuccessMsg = '';
+  $scope.addCategory = function (e) {
+    $scope.deletePosBG = '';
+    $scope.addSuccessMsg = '';
+    $scope.closeText = 'Cancel';
+    var posx = posy = 0;
+    // Great article about mouse positioning:  http://www.quirksmode.org/js/events_properties.html 
+    if (e.pageX || e.pageY)   {
+      posx = e.pageX;
+      posy = e.pageY;
+    }
+    else if (e.clientX || e.clientY)  {
+      posx = e.clientX + document.body.scrollLeft
+        + document.documentElement.scrollLeft;
+      posy = e.clientY + document.body.scrollTop
+        + document.documentElement.scrollTop;
+    }
+    // posx and posy contain the mouse position relative to the document    
+    var modalTop = $('#categoryModal').css('top')
+    modalTop = modalTop.substring(0, modalTop.length-2);   // annoying position fix because relative to modal
+    $scope.addPos = {'z-index': 10, 'top': posy - modalTop, 'display':'block'};
+    $scope.deletePosBG = {'z-index': 9, 'display':'block'};    
+  }
+
+  $scope.addCategoryConfirm = function (name) {
+    itemService.createCategory ($scope.key, name)
+      .then(function(data) {
+        debugger;
+        $scope.addSuccessMsg = 'Category successfully added.'
+        $scope.closeText = 'Close';
+      });
   }
 
   $scope.closeCategoryPopup = function () {
@@ -239,6 +273,18 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     //$('#deleteCategoryModal').foundation('reveal', 'open');
   }
 
+  $scope.closeCatAddPopup = function () {
+    //$('#deleteCategoryModal').foundation('reveal', 'close');
+    $scope.addPos = {'display':'none'};
+    $scope.deletePosBG = {'display':'none'};
+    itemService.getCategories ($scope.key)
+      .then (function (dataCat) {
+        debugger;
+        $scope.loadedCategories = dataCat;
+        $scope.openCategoryPopup();
+      });    
+  }  
+
   $scope.closeCatDeletePopup = function () {
     //$('#deleteCategoryModal').foundation('reveal', 'close');
     $scope.deletePos = {'display':'none'};
@@ -250,8 +296,9 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
         $scope.openCategoryPopup();
       });
   }
-modalCategories
+
   $scope.removeCategory = function () {
+    var id = $scope.categoryId;
     console.log ('removing category: ' + id + ' ' + $scope.deleteItemNote);
 
     itemService.deleteCat (id, $scope.key)
@@ -259,7 +306,8 @@ modalCategories
         debugger;
         if (data > 0) {
           $scope.deleteErrorMsg = data.toString() + ' items are assigned to this category. ';
-          $scope.deleteErrorMsg += 'Please re-assign those items before deleting this category.'
+          $scope.deleteErrorMsg += 'Please re-assign those items before deleting this category.';
+          $scope.closeText = 'Close';
         }
         else {
           $scope.deleteSuccessMsg = 'Category successfully deleted.'
@@ -345,6 +393,7 @@ modalCategories
     $scope.deleteItemNote = note;
     $scope.deleteId = id;
     $('#deleteModal').foundation('reveal', 'open');
+    //$('#deleteModal').css({'display' : 'block'});
   }
 
   $scope.confirmedDelete = function () {

@@ -45,6 +45,7 @@ module.exports = function(app) {
     console.log ('create new category:');
     console.log (req.header);
     console.log (req.body);
+    // TODO   Need to make sure category is unique, attempt to do a read first.
     next.save(function (err, obj) {
       if (err) { console.error(err); res.send('ERROR posting'); }
       else { 
@@ -88,8 +89,10 @@ module.exports = function(app) {
               console.log ('%d Items were found under this category.', items.length);
               if (items.length == 0) {
                 console.log ('OK to delete: ' + req.params.id.substring(4));
-                Category.findById(req.params.id.substring(4)).remove();
-                res.status(200).send('0');
+                Category.findById(req.params.id.substring(4)).remove(function (err) {
+                  if (err) { console.error(err); res.send('Unable to Delete'); }
+                  else { console.log ('successful delete'); res.status(200).send('0'); }
+                });
               }
               // Returns the number of items left in the category
               // or 0 if category was deleted.

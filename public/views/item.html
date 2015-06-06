@@ -164,7 +164,7 @@
     <p>
       <div class="row">
         <div class="small-2 medium-3 large-3 columns">
-          <a ng-show="!recalcCategories" ng-click="addCategory();"class="button postfix" style="width: 7rem;">Add</a>
+          <a ng-show="!recalcCategories" ng-click="addCategory($event);"class="button postfix" style="width: 7rem;">Add</a>
           <img ng-show="recalcCategories" src="images/loading-1.gif" />
         </div>
         <div class="small-2 medium-3 large-3 columns">
@@ -178,7 +178,7 @@
     <a class="close-reveal-modal" aria-label="Close">&#215;</a>
     <div id="my-modal-bg" ng-style="deletePosBG"></div>
    <!-- DELETE CONFIRMATION POPUP, MAKE INTO DIRECTIVE LATER, CUSTOM MESSAGES, ONE DIRECTIVE FOR ALL DELETE CONFIRMATIONS -->
-    <div id="deleteModal" ng-style="deletePos">
+    <div id="deleteCatModal" ng-style="deletePos">
       <h4 id="modalTitle">Confirm Delete:</h4>
       <div ng-show="deleteErrorMsg.length == 0 && deleteSuccessMsg.length == 0">
         Are you sure you want to delete the {{deleteCategoryNote}} category?<br>
@@ -207,7 +207,34 @@
         </div>
       </p> 
     </div> 
+   <!-- ADD CONFIRMATION POPUP, MAKE INTO DIRECTIVE LATER, CUSTOM MESSAGES -->
+    <div id="addCatModal" ng-style="addPos">
+      <h4 id="modalTitle">Add a Category:</h4>
+      <div ng-show="addSuccessMsg.length == 0">
+        Enter a new category to add:<br>
+        <input type="text" ng-model="newCategory" style="width: 8rem;" />
+      </div>
 
+      <div ng-show="addSuccessMsg.length > 0">
+        {{addSuccessMsg}}
+      </div>      
+
+       <p>
+        <div class="row">
+          <div class="small-3 medium-3 large-3 columns">
+            <a ng-click="closeCatAddPopup();"class="button postfix" style="width: 4rem;">{{closeText}}</a>
+          </div>
+          <div class="small-2 medium-2 large-2 columns">
+          </div>        
+          <div class="small-3 medium-3 large-3 columns">
+            <a ng-show="!adding && addSuccessMsg.length == 0" ng-click="addCategoryConfirm(newCategory);"class="button postfix" style="width: 4rem;">Add</a>
+            <img ng-show="adding" src="images/loading-1.gif" />
+          </div> 
+          <div class="small-4 medium-4 large-4 columns">
+          </div>       
+        </div>
+      </p> 
+    </div> 
   </div></div>
 
 

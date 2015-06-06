@@ -72,7 +72,7 @@ app.factory('keyService', ['$http', '$q', function($http, $q) {
         });  // Not waiting on a response, just hitting all posts at once.... 
       });
 
-    }, 
+    },
 
     createAccount : function (userName, userPwd, key, callback) {
       console.log ('in user create: ' + userName);
