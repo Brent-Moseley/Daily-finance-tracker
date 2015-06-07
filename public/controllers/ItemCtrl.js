@@ -222,11 +222,12 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     // posx and posy contain the mouse position relative to the document    
     var modalTop = $('#categoryModal').css('top')
     modalTop = modalTop.substring(0, modalTop.length-2);   // annoying position fix because relative to modal
-    $scope.addPos = {'z-index': 10, 'top': posy - modalTop, 'display':'block'};
+    $scope.addPos = {'z-index': 10, 'top': posy - modalTop - 100, 'display':'block'};
     $scope.deletePosBG = {'z-index': 9, 'display':'block'};    
   }
 
   $scope.addCategoryConfirm = function (name) {
+    if ($scope.addDupMsg.length > 0) return;
     itemService.createCategory ($scope.key, name)
       .then(function(data) {
         debugger;
@@ -238,6 +239,14 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   $scope.closeCategoryPopup = function () {
     $('#categoryModal').foundation('reveal', 'close');
   }
+
+  $scope.checkCatDup = function (newCategory) {
+    console.log ('Checking this: ' + newCategory);
+    $scope.addDupMsg = '';
+    angular.forEach ($scope.loadedCategories, function (cat) {
+       if (cat.name == newCategory) $scope.addDupMsg = 'This category already exists, please create another.';
+    });
+  } 
 
   $scope.categoryId = 0;
   $scope.deleteErrorMsg = '';
@@ -251,6 +260,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     $scope.deleteSuccessMsg = '';
     $scope.deleteCategoryNote = name;
     $scope.closeText = 'Cancel';
+    
     var posx = posy = 0;
     // #categoryModal.top
     // Great article about mouse positioning:  http://www.quirksmode.org/js/events_properties.html 
@@ -478,3 +488,9 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
 });
 
 //  Get in the zone, fast flow coding like spoken communication!!
+//
+// Evidence
+// I love coding and development!!
+// The evidence is very strong, especially from the last year, but also the last 20
+// that this is one of the top careers out there, and that this is the MOST lucrative, stable,
+// rewarding career I can be doing, by far!!  It is WELL worth every hour of hard work I put into it.
