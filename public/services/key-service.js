@@ -76,6 +76,8 @@ app.factory('keyService', ['$http', '$q', function($http, $q) {
 
     createAccount : function (userName, userPwd, key, callback) {
       console.log ('in user create: ' + userName);
+      var keySave = key;
+      var createCategories = this.createAllCategories;
       var data = JSON.stringify ({
         'userName': userName, 
         'pwd': userPwd,
@@ -91,7 +93,7 @@ app.factory('keyService', ['$http', '$q', function($http, $q) {
           // TODO
           // Create set of categories for new user.
             
-            this.createAllCategories (key);
+            createCategories (keySave);
             callback(response.data);
           } else {
             // invalid response

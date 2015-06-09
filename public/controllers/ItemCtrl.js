@@ -13,11 +13,6 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
   $scope.updatingDates = false;
   $scope.mainTableLoading = false;
   $scope.dateOptions = {
-      // options -  http://api.jqueryui.com/datepicker/#option-minDate
-      // minDate: 0,
-      // maxDate: "+4M",
-      // buttonImage: "datepicker.gif",
-      //buttonImageOnly: true,
       showOn: "focus"
   };
 
@@ -48,14 +43,10 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
         console.log (' Error in get');
         console.log(err);
       });
-      // Perhaps add some error handling here.
   }
 
   var createAllCategories = function (key) {
-    debugger;
     keyService.createAllCategories (key);
-    debugger;
-    // Wait for back end. 
   }
 
   $scope.sortDirection = {date: -1, category: -1, cost: -1};
@@ -63,7 +54,6 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     $scope.sortDirection[col] *= -1;
     $scope.items = $scope.items.sort(function (a,b) {
       if (a[col] == b[col]) return 0;
-      //console.log (a.category < b.category);
       if ($scope.sortDirection[col] == 1)
         return a[col] < b[col] ? -1 : 1;
       else
@@ -76,7 +66,6 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     $scope.sortDirection[col] *= -1;
     $scope.items = $scope.items.sort(function (a,b) {
       if (parseFloat(a[col]) == parseFloat(b[col])) return 0;
-      //console.log (a.category < b.category);
       if ($scope.sortDirection[col] == 1)
         return parseFloat(a[col]) < parseFloat(b[col]) ? -1 : 1;
       else
@@ -248,84 +237,82 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     });
   } 
 
-  $scope.categoryId = 0;
-  $scope.deleteErrorMsg = '';
-  $scope.deletePosBG = '';
-  $scope.deleteSuccessMsg = '';
-  $scope.openCatDeleteConfirm = function (id, name, e) {
-    // have clientX, clientY, offsetX, offsetY, pageX, pageY (seems to be absolute positioning), screenX, screenY (relative?)
-    $scope.categoryId = id;
-    $scope.deleteErrorMsg = '';
-    $scope.deletePosBG = '';
-    $scope.deleteSuccessMsg = '';
-    $scope.deleteCategoryNote = name;
-    $scope.closeText = 'Cancel';
+  // $scope.categoryId = 0;
+  // $scope.deleteErrorMsg = '';
+  // $scope.deletePosBG = '';
+  // $scope.deleteSuccessMsg = '';
+  // $scope.openCatDeleteConfirm = function (id, name, e) {
+  //   // have clientX, clientY, offsetX, offsetY, pageX, pageY (seems to be absolute positioning), screenX, screenY (relative?)
+  //   $scope.categoryId = id;
+  //   $scope.deleteErrorMsg = '';
+  //   $scope.deletePosBG = '';
+  //   $scope.deleteSuccessMsg = '';
+  //   $scope.deleteCategoryNote = name;
+  //   $scope.closeText = 'Cancel';
     
-    var posx = posy = 0;
-    // #categoryModal.top
-    // Great article about mouse positioning:  http://www.quirksmode.org/js/events_properties.html 
-    if (e.pageX || e.pageY)   {
-      posx = e.pageX;
-      posy = e.pageY;
-    }
-    else if (e.clientX || e.clientY)  {
-      posx = e.clientX + document.body.scrollLeft
-        + document.documentElement.scrollLeft;
-      posy = e.clientY + document.body.scrollTop
-        + document.documentElement.scrollTop;
-    }
-    // posx and posy contain the mouse position relative to the document    
-    var modalTop = $('#categoryModal').css('top')
-    modalTop = modalTop.substring(0, modalTop.length-2);   // annoying position fix because relative to modal
-    $scope.deletePos = {'z-index': 10, 'top': posy - modalTop, 'display':'block'};
-    $scope.deletePosBG = {'z-index': 9, 'display':'block'};
-    //$scope.closeCategoryPopup();
-    //$('#deleteCategoryModal').foundation('reveal', 'open');
-  }
+  //   var posx = posy = 0;
+  //   // #categoryModal.top
+  //   // Great article about mouse positioning:  http://www.quirksmode.org/js/events_properties.html 
+  //   if (e.pageX || e.pageY)   {
+  //     posx = e.pageX;
+  //     posy = e.pageY;
+  //   }
+  //   else if (e.clientX || e.clientY)  {
+  //     posx = e.clientX + document.body.scrollLeft
+  //       + document.documentElement.scrollLeft;
+  //     posy = e.clientY + document.body.scrollTop
+  //       + document.documentElement.scrollTop;
+  //   }
+  //   // posx and posy contain the mouse position relative to the document    
+  //   var modalTop = $('#categoryModal').css('top')
+  //   modalTop = modalTop.substring(0, modalTop.length-2);   // annoying position fix because relative to modal
+  //   $scope.deletePos = {'z-index': 10, 'top': posy - modalTop, 'display':'block'};
+  //   $scope.deletePosBG = {'z-index': 9, 'display':'block'};
+  // }
 
-  $scope.closeCatAddPopup = function () {
-    //$('#deleteCategoryModal').foundation('reveal', 'close');
-    $scope.addPos = {'display':'none'};
-    $scope.deletePosBG = {'display':'none'};
-    itemService.getCategories ($scope.key)
-      .then (function (dataCat) {
-        debugger;
-        $scope.loadedCategories = dataCat;
-        $scope.openCategoryPopup();
-      });    
-  }  
+  // $scope.closeCatAddPopup = function () {
+  //   //$('#deleteCategoryModal').foundation('reveal', 'close');
+  //   $scope.addPos = {'display':'none'};
+  //   $scope.deletePosBG = {'display':'none'};
+  //   itemService.getCategories ($scope.key)
+  //     .then (function (dataCat) {
+  //       debugger;
+  //       $scope.loadedCategories = dataCat;
+  //       $scope.openCategoryPopup();
+  //     });    
+  // }  
 
-  $scope.closeCatDeletePopup = function () {
-    //$('#deleteCategoryModal').foundation('reveal', 'close');
-    $scope.deletePos = {'display':'none'};
-    $scope.deletePosBG = {'display':'none'};
-    itemService.getCategories ($scope.key)
-      .then (function (dataCat) {
-        debugger;
-        $scope.loadedCategories = dataCat;
-        $scope.openCategoryPopup();
-      });
-  }
+  // $scope.closeCatDeletePopup = function () {
+  //   //$('#deleteCategoryModal').foundation('reveal', 'close');
+  //   $scope.deletePos = {'display':'none'};
+  //   $scope.deletePosBG = {'display':'none'};
+  //   itemService.getCategories ($scope.key)
+  //     .then (function (dataCat) {
+  //       debugger;
+  //       $scope.loadedCategories = dataCat;
+  //       $scope.openCategoryPopup();
+  //     });
+  // }
 
-  $scope.removeCategory = function () {
-    var id = $scope.categoryId;
-    console.log ('removing category: ' + id + ' ' + $scope.deleteItemNote);
+  // $scope.removeCategory = function () {
+  //   var id = $scope.categoryId;
+  //   console.log ('removing category: ' + id + ' ' + $scope.deleteItemNote);
 
-    itemService.deleteCat (id, $scope.key)
-      .then(function(data) {
-        debugger;
-        if (data > 0) {
-          $scope.deleteErrorMsg = data.toString() + ' items are assigned to this category. ';
-          $scope.deleteErrorMsg += 'Please re-assign those items before deleting this category.';
-          $scope.closeText = 'Close';
-        }
-        else {
-          $scope.deleteSuccessMsg = 'Category successfully deleted.'
-          $scope.closeText = 'Close';
-          //$scope.closeCatDeletePopup();
-          //$scope.openCategoryPopup();
-        }
-      });
+  //   itemService.deleteCat (id, $scope.key)
+  //     .then(function(data) {
+  //       debugger;
+  //       if (data > 0) {
+  //         $scope.deleteErrorMsg = data.toString() + ' items are assigned to this category. ';
+  //         $scope.deleteErrorMsg += 'Please re-assign those items before deleting this category.';
+  //         $scope.closeText = 'Close';
+  //       }
+  //       else {
+  //         $scope.deleteSuccessMsg = 'Category successfully deleted.'
+  //         $scope.closeText = 'Close';
+  //         //$scope.closeCatDeletePopup();
+  //         //$scope.openCategoryPopup();
+  //       }
+  //     });
 
 
     // $('#deleteCategoryModal').foundation('reveal', 'close');
@@ -343,22 +330,22 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     //   });    
   }  
 
-  $scope.updateCategory = function (category) {
-    itemService.updateCategory ({
-      name: category.name,
-      _id: category.id,
-      limit: category.limit
-    }, $scope.key)
-    .then (function (data) {
-      // returns the new ID, if there is one.
-      console.log (' newly assigned ID: ' + data);   //???
-      if (data) category.id = data;    /// Should never have this....
-      angular.forEach ($scope.loadedCategories, function (cat) {
-        if (cat.name == category.name) cat.limit = category.limit;
-      });
-      $scope.recalculate ();
-    });
-  }
+  // $scope.updateCategory = function (category) {
+  //   itemService.updateCategory ({
+  //     name: category.name,
+  //     _id: category.id,
+  //     limit: category.limit
+  //   }, $scope.key)
+  //   .then (function (data) {
+  //     // returns the new ID, if there is one.
+  //     console.log (' newly assigned ID: ' + data);
+  //     if (data) category.id = data;
+  //     angular.forEach ($scope.loadedCategories, function (cat) {
+  //       if (cat.name == category.name) cat.limit = category.limit;
+  //     });
+  //     $scope.recalculate ();
+  //   });
+  // }
 
   function updatePageTotals (data) {
     var total = 0;
@@ -383,18 +370,18 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
       });
   }
 
-  $scope.remove = function (id) {
-    console.log ('removing: ' + id);
-    itemService.delete (id, $scope.key)
-      .then(function(data) {
-        $scope.closeDeletePopup();
-        $scope.getAll();
-        $scope.calculateCatTotal($scope.selectedCat);
-      }, function(err) {
-        console.log (' Error in remove');
-        console.log(err);
-      });
-  }
+  // $scope.remove = function (id) {
+  //   console.log ('removing: ' + id);
+  //   itemService.delete (id, $scope.key)
+  //     .then(function(data) {
+  //       $scope.closeDeletePopup();
+  //       $scope.getAll();
+  //       $scope.calculateCatTotal($scope.selectedCat);
+  //     }, function(err) {
+  //       console.log (' Error in remove');
+  //       console.log(err);
+  //     });
+  // }
 
   $scope.deleteItemNote = '';
   $scope.deleting = false;
@@ -403,23 +390,17 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     $scope.deleteItemNote = note;
     $scope.deleteId = id;
     $('#deleteModal').foundation('reveal', 'open');
-    //$('#deleteModal').css({'display' : 'block'});
   }
 
-  $scope.confirmedDelete = function () {
-    $scope.deleting = true;
-    $scope.remove($scope.deleteId);
-  }
+  // $scope.confirmedDelete = function () {
+  //   $scope.deleting = true;
+  //   $scope.remove($scope.deleteId);
+  // }
 
-  $scope.closeDeletePopup = function () {
-    $scope.deleting = false;
-    $('#deleteModal').foundation('reveal', 'close');
-  }
-
-  $scope.closeCategoryPopup = function () {
-    $('#deleteModal').foundation('reveal', 'close');
-  }
-
+  // $scope.closeDeletePopup = function () {
+  //   $scope.deleting = false;
+  //   $('#deleteModal').foundation('reveal', 'close');
+  // }
 
   $scope.timerUpdateNote = false;
   $scope.updatingCost = false;
@@ -429,7 +410,6 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
                                                             // updating notes, re-calculate page total
     $scope.updatingCost = isCost;
     if ($scope.timerUpdateNote == false) {
-      console.log ('Scheduling timeout for save');
       $scope.timerUpdateNote = true;
       // schedule a save for data due to note field edits, avoids constantly hitting server for updates
       // on every key stroke
@@ -439,7 +419,6 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
       }, 1000);
 
     }
-    else console.log ('Not yet, timeout already scheduled');
   }
 
   $scope.update = function (id, data) {
@@ -450,7 +429,6 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     //   row version and a couple other properties from the item first.
     itemService.update (id, angular.copy(data), $scope.key)
       .then(function(data) {
-        console.log ('Update completed');
         $scope.calculateCatTotal($scope.selectedCat);
       }, function(err) {
         console.log (' Error in update');
@@ -468,29 +446,21 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     $timeout( function(){ $route.reload(); }, 100);
   }
 
-  $scope.calculateCatTotal = function (selectedCat) {
-    var total = 0;
-    angular.forEach ($scope.items, function (item) {
-      if (item.category == selectedCat) total += (parseFloat(item.cost) * 100);
-    });
-    $scope.catTotal = total / 100;
-  }
+  // $scope.calculateCatTotal = function (selectedCat) {
+  //   var total = 0;
+  //   angular.forEach ($scope.items, function (item) {
+  //     if (item.category == selectedCat) total += (parseFloat(item.cost) * 100);
+  //   });
+  //   $scope.catTotal = total / 100;
+  // }
 
-  $scope.calculateAllCatTotal = function () {
-    itemService.getCategories ($scope.key)
-      .then (function (dataCat) {
-        $scope.loadedCategories = dataCat;
-      });
-  }
+  // $scope.calculateAllCatTotal = function () {
+  //   itemService.getCategories ($scope.key)
+  //     .then (function (dataCat) {
+  //       $scope.loadedCategories = dataCat;
+  //     });
+  // }
 
   $scope.getAll();  // Show items when viewing first time
 
 });
-
-//  Get in the zone, fast flow coding like spoken communication!!
-//
-// Evidence
-// I love coding and development!!
-// The evidence is very strong, especially from the last year, but also the last 20
-// that this is one of the top careers out there, and that this is the MOST lucrative, stable,
-// rewarding career I can be doing, by far!!  It is WELL worth every hour of hard work I put into it.

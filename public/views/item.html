@@ -1,6 +1,4 @@
 <!-- public/views/item.html -->
-<!-- Foundation Cheat Sheet:  https://princessdesign.net/foundation-cheat-sheet/ -->
-
 
 <div class="panel content large-8 medium-10 small-12 small-centered large-centered radius" 
      style="padding: 0.75rem;">
@@ -41,7 +39,6 @@
   </div>
   <img ng-show="mainTableLoading" src="images/loading-1.gif" />
   <table>
-    <!-- Table for larger devices, create a smaller one for small devices that omits remove and notes -->
     <thead>
       <tr>
         <th width="120" class="hand-clickable" ng-click="columnSort('date');">Date</th>
@@ -53,7 +50,6 @@
     </thead>
     <tbody>
       <tr ng-repeat="item in items track by $index">
-        <!-- <td>{{item.date}}</td> -->
         <td>
           <input class="calendar" type="text" ng-model="item.date" ui-date="dateOptions" grid="true"/> 
         </td>
@@ -62,7 +58,6 @@
             <option ng-repeat="option in loadedCategories">{{option.name}}</option>
           </select>
         </td>
-        <!-- <td>{{item.cost}}</td> -->
          <td>
           <input type="text" ng-model="item.cost" filter-element="numberCurrency" ng-change="updateNote(item._id, $index, true)" class="line-input">
         </td>     
@@ -118,129 +113,9 @@
     </div>       
   </div>             
 
-  <!-- DELETE CONFIRMATION POPUP, MAKE INTO DIRECTIVE LATER, CUSTOM MESSAGES, ONE DIRECTIVE FOR ALL DELETE CONFIRMATIONS -->
-  <div id="deleteModal" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-    <h3 id="modalTitle">Confirm Delete:</h3>
-    Are you sure you want to delete this expense? {{deleteItemNote}}
-     <p>
-      <div class="row">
-        <div class="small-4 medium-4 large-4 columns">
-          <a ng-click="closeDeletePopup();"class="button postfix" style="width: 7rem;">Cancel</a>
-        </div>
-        <div class="small-4 medium-4 large-4 columns">
-        </div>        
-        <div class="small-4 medium-4 large-4 columns">
-          <a ng-show="!deleting" ng-click="confirmedDelete();"class="button postfix" style="width: 7rem;">Delete</a>
-          <img ng-show="deleting" src="images/loading-1.gif" />
-        </div>     
-      </div>
-    </p> 
-  </div>  
+  <!-- DELETE CONFIRMATION POPUP -->
+  <expense-delete-modal></expense-delete-modal>
 
   <!-- CATEGORY POPUP, MAKE INTO DIRECTIVE LATER -->
-  <div id="categoryModal" class="reveal-modal medium" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-    <h3 id="modalTitle">Categories</h3>
-    Shows your totals for the current month in each category, and is color coded to show how close you are to your budget limit.
-    <table>
-      <th width="120">Category Name</th>
-      <th width="100">Monthly Limit</th> 
-      <th width="100">Current Month Total</th>
-      <th width="50" class="hide-for-small">Remove</th>
-      <tr ng-repeat="category in modalCategories track by $index">
-        <!-- <td>{{item.date}}</td> -->
-        <td>
-          {{category.name}}
-        </td>
-        <td>
-          <input type="text" ng-model="category.limit" filter-element="numberCurrency" class="line-input" ng-blur="updateCategory(category)"/>
-        </td>
-        <td ng-class="category.highlight">
-          {{category.currentTotal | currency}}
-        </td>
-        <td class="text-center hide-for-small"><a href="" ng-click="openCatDeleteConfirm(category.id, category.name, $event)">X</a></td>
-      </tr>
-    </table>
-   
-    <p>
-      <div class="row">
-        <div class="small-2 medium-3 large-3 columns">
-          <a ng-show="!recalcCategories" ng-click="addCategory($event);"class="button postfix" style="width: 7rem;">Add</a>
-          <img ng-show="recalcCategories" src="images/loading-1.gif" />
-        </div>
-        <div class="small-2 medium-3 large-3 columns">
-          <a ng-click="closeCategoryPopup();"class="button postfix" style="width: 7rem;">Close</a>
-        </div>
-        <div class="small-8 medium-6 large-6 columns">
-        </div>        
-      </div>
-    </p>
-
-    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
-    <div id="my-modal-bg" ng-style="deletePosBG"></div>
-   <!-- DELETE CONFIRMATION POPUP, MAKE INTO DIRECTIVE LATER, CUSTOM MESSAGES, ONE DIRECTIVE FOR ALL DELETE CONFIRMATIONS -->
-    <div id="deleteCatModal" ng-style="deletePos">
-      <h4 id="modalTitle">Confirm Delete:</h4>
-      <div ng-show="deleteErrorMsg.length == 0 && deleteSuccessMsg.length == 0">
-        Are you sure you want to delete the {{deleteCategoryNote}} category?<br>
-        You cannot undo this later.
-      </div>
-      <div ng-show="deleteErrorMsg.length > 0">
-        {{deleteErrorMsg}}
-      </div>
-      <div ng-show="deleteSuccessMsg.length > 0">
-        {{deleteSuccessMsg}}
-      </div>      
-
-       <p>
-        <div class="row">
-          <div class="small-3 medium-3 large-3 columns">
-            <a ng-click="closeCatDeletePopup();"class="button postfix" style="width: 4rem;">{{closeText}}</a>
-          </div>
-          <div class="small-2 medium-2 large-2 columns">
-          </div>        
-          <div class="small-3 medium-3 large-3 columns">
-            <a ng-show="!deleting && deleteErrorMsg.length == 0 && deleteSuccessMsg.length == 0" ng-click="removeCategory();"class="button postfix" style="width: 4rem;">Delete</a>
-            <img ng-show="deleting" src="images/loading-1.gif" />
-          </div> 
-          <div class="small-4 medium-4 large-4 columns">
-          </div>       
-        </div>
-      </p> 
-    </div> 
-   <!-- ADD CONFIRMATION POPUP, MAKE INTO DIRECTIVE LATER, CUSTOM MESSAGES -->
-    <div id="addCatModal" ng-style="addPos">
-      <h4 id="modalTitle">Add a Category:</h4>
-      <div ng-show="addSuccessMsg.length == 0">
-        Enter a new category to add:<br>
-        <input type="text" ng-model="newCategory" ng-change="checkCatDup(newCategory)" style="width: 8rem;" />
-      </div>
-
-      <div ng-show="addSuccessMsg.length > 0">
-        {{addSuccessMsg}}
-      </div>      
-      <div ng-show="addDupMsg.length > 0" style="color: red">
-        {{addDupMsg}}
-      </div>
-      <div ng-show="!addDupMsg.length">
-        &nbsp;
-      </div>       
-       <p>
-        <div class="row">
-          <div class="small-3 medium-3 large-3 columns">
-            <a ng-click="closeCatAddPopup();"class="button postfix" style="width: 4rem;">{{closeText}}</a>
-          </div>
-          <div class="small-2 medium-2 large-2 columns">
-          </div>        
-          <div class="small-3 medium-3 large-3 columns">
-            <a ng-show="!adding && addSuccessMsg.length == 0" ng-disable="addDupMsg.length > 0" ng-click="addCategoryConfirm(newCategory);"class="button postfix" style="width: 4rem;">Add</a>
-            <img ng-show="adding" src="images/loading-1.gif" />
-          </div> 
-          <div class="small-4 medium-4 large-4 columns">
-          </div>       
-        </div>
-      </p> 
-    </div> 
-  </div></div>
-
-
-<!--  I am awesome and I am going to rock this!! -->
+  <category-modal></category-modal>
+ </div>
