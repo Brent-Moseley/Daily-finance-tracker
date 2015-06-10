@@ -25,11 +25,6 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
       .then(function(data) {
         // promise fulfilled
         if (data) {
-          // $scope.items = data.sort(function (a,b) {
-          //   if (a.category == b.category) return 0;
-          //   console.log (a.category < b.category);
-          //   return a.category < b.category ? -1 : 1;
-          // });
           $scope.items = data;
           console.log ('data read:');
           console.log ($scope.items);
@@ -47,6 +42,22 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
 
   var createAllCategories = function (key) {
     keyService.createAllCategories (key);
+  }
+
+
+  $scope.calculateAllCatTotal = function () {
+    itemService.getCategories ($scope.key)
+      .then (function (dataCat) {
+        $scope.loadedCategories = dataCat;
+      });
+  }  
+
+  $scope.calculateCatTotal = function (selectedCat) {
+    var total = 0;
+    angular.forEach ($scope.items, function (item) {
+      if (item.category == selectedCat) total += (parseFloat(item.cost) * 100);
+    });
+    $scope.catTotal = total / 100;
   }
 
   $scope.sortDirection = {date: -1, category: -1, cost: -1};
@@ -74,168 +85,161 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
 
   }  
   
-  // Initially, this is always defined as a monthly amount for the current month.
-  // There will be a Category Limits button below the category drop down.
-  // Clicking this will bring up the Category popup.  Here will be a listing of all
-  // categories, the current monthly total for each (query the backend for these), and
-  // this pre-defined limit.  The total will appear via this color theme:  Green: OK,
-  // yellow only 25% left, red 10% left or less.  User can then change their monthly budget
-  // limits.  
-  $scope.loadedCategories = [];  
-  $scope.totals = [];
-  $scope.openCategoryPopup = function () {
-    $scope.loadingCategories = $scope.recalcCategories = true;
-    var now = new Date();
+  // **********  Just put simple display logic in the directive link function, put lower level
+  //   logic for categories into a helper file.  
+  // $scope.loadedCategories = [];  
+  // $scope.totals = [];
+  // $scope.openCategoryPopup = function () {
+  //   $scope.loadingCategories = $scope.recalcCategories = true;
+  //   var now = new Date();
  
-    var startDate = moment([now.getFullYear(), now.getMonth() - 1]);  // remove -1
+  //   var startDate = moment([now.getFullYear(), now.getMonth() - 1]);  // remove -1
 
-    // Clone the value before .endOf()
-    var endDate = moment(startDate).endOf('month');
+  //   // Clone the value before .endOf()
+  //   var endDate = moment(startDate).endOf('month');
 
-    startDate = startDate.format('L');
-    endDate = endDate.format('L');
+  //   startDate = startDate.format('L');
+  //   endDate = endDate.format('L');
     
-    $scope.totals = $scope.loadedCategories.reduce(function(o, v, i) {
-      o[v.name] = 0;
-      return o;
-    }, {}); 
-    // reduce down set of expense items documents to those within the current month
-    // set up category total array
-    // go through all transactions, adding costs into each array "bucket"
-    itemService.get($scope.key, true, startDate, endDate)
-      .then(function(data) {
-        // promise fulfilled
-        if (data) {
-          $scope.catItems = data;
-          console.log ('data read:');
-          console.log (data);
+  //   $scope.totals = $scope.loadedCategories.reduce(function(o, v, i) {
+  //     o[v.name] = 0;
+  //     return o;
+  //   }, {}); 
+  //   // reduce down set of expense items documents to those within the current month
+  //   // set up category total array
+  //   // go through all transactions, adding costs into each array "bucket"
+  //   itemService.get($scope.key, true, startDate, endDate)
+  //     .then(function(data) {
+  //       // promise fulfilled
+  //       if (data) {
+  //         $scope.catItems = data;
+  //         console.log ('data read:');
+  //         console.log (data);
 
-          // Create summations for each category in totals
-          angular.forEach (data, function (item) {
-            $scope.totals[item.category] += (parseFloat(item.cost) * 100);
-            console.log ('  Adding to: ' + item.category);
-          });
-          angular.forEach ($scope.loadedCategories, function (total) {
-            $scope.totals[total.name] = $scope.totals[total.name] / 100;
-             console.log ('  Finalizing: ' + total.name);
-          });
-          console.log ('Totals:');
-          console.log ($scope.totals);
+  //         // Create summations for each category in totals
+  //         angular.forEach (data, function (item) {
+  //           $scope.totals[item.category] += (parseFloat(item.cost) * 100);
+  //           console.log ('  Adding to: ' + item.category);
+  //         });
+  //         angular.forEach ($scope.loadedCategories, function (total) {
+  //           $scope.totals[total.name] = $scope.totals[total.name] / 100;
+  //            console.log ('  Finalizing: ' + total.name);
+  //         });
+  //         console.log ('Totals:');
+  //         console.log ($scope.totals);
 
-          // itemService.getCategories ($scope.key)     // Unnecessary, already have these. 
-          //   .then(function (data2) {
-          //     $scope.loadedCategories = data2;
-          //     console.log ('Categories came back as:');
-          //     console.log (data2);
+  //         // itemService.getCategories ($scope.key)     // Unnecessary, already have these. 
+  //         //   .then(function (data2) {
+  //         //     $scope.loadedCategories = data2;
+  //         //     console.log ('Categories came back as:');
+  //         //     console.log (data2);
 
-              $scope.recalculate();
-              if (!$('#categoryModal').hasClass('open')) $('#categoryModal').foundation('reveal', 'open');
-              $scope.loadingCategories = $scope.recalcCategories = false;
-            // }, function (err) {
-            //   console.log ('Error in getting category data:' + err);
-            // });
-        }
-      });
-  }
+  //             $scope.recalculate();
+  //             if (!$('#categoryModal').hasClass('open')) $('#categoryModal').foundation('reveal', 'open');
+  //             $scope.loadingCategories = $scope.recalcCategories = false;
+  //           // }, function (err) {
+  //           //   console.log ('Error in getting category data:' + err);
+  //           // });
+  //       }
+  //     });
+  // }
 
-  $scope.recalculate = function () {
-    console.log ('re-calculating');
-    $scope.modalCategories = [];
+  // $scope.recalculate = function () {
+  //   console.log ('re-calculating');
+  //   $scope.modalCategories = [];
 
-    // TODO:
-    // Need to re-write this algorithm:  instead of adding up totals from the items in the beginning,
-    // simply make an object with properties being the name of each category loaded from the back end.
-    // Then go through the entire list of items (which will be from just this month) adding up each item
-    // into the appropriate category. 
-    // Will need to do some refactoring in the near future to break this code up into smaller files and put
-    // a lot more logic into the service. Also break up the routes.js on the back end up into feature based
-    // folders.  Do same when I make directives for the UI. 
-    // I will need a popup to take an input for adding a category, then a back-end call to add, then a category
-    // popup reload.
-    // Will also need to finish delete with a popup result message, then category popup reload. 
-    console.log (' Creating modal categories from:');
-    console.log ($scope.loadedCategories);
-    angular.forEach ($scope.loadedCategories, function (cat) {
-      //debugger;
-      // Go through each default category, see if you can find current category in the object
-      // returned from the back end.  If so, push onto the array its data, otherwise,
-      // make defaults.
-      var total = $scope.totals[cat.name];
-      var limit = 0;
-      var css = 'green';    // Default to green
-      //     console.log ('Looking for category: ' + cat);
+  //   // TODO:
+  //   // Need to re-write this algorithm:  instead of adding up totals from the items in the beginning,
+  //   // simply make an object with properties being the name of each category loaded from the back end.
+  //   // Then go through the entire list of items (which will be from just this month) adding up each item
+  //   // into the appropriate category. 
+  //   // Will need to do some refactoring in the near future to break this code up into smaller files and put
+  //   // a lot more logic into the service. Also break up the routes.js on the back end up into feature based
+  //   // folders.  Do same when I make directives for the UI. 
+  //   // I will need a popup to take an input for adding a category, then a back-end call to add, then a category
+  //   // popup reload.
+  //   // Will also need to finish delete with a popup result message, then category popup reload. 
+  //   console.log (' Creating modal categories from:');
+  //   console.log ($scope.loadedCategories);
+  //   angular.forEach ($scope.loadedCategories, function (cat) {
+  //     //debugger;
+  //     // Go through each default category, see if you can find current category in the object
+  //     // returned from the back end.  If so, push onto the array its data, otherwise,
+  //     // make defaults.
+  //     var total = $scope.totals[cat.name];
+  //     var limit = 0;
+  //     var css = 'green';    // Default to green
+  //     //     console.log ('Looking for category: ' + cat);
 
-      // angular.forEach ($scope.loadedCategories, function (datacat) {
-      //   if (datacat.name == cat) {
-      console.log ('    adding total:' + total);
-      console.log ('   Adding limit of: ' + cat.limit);
-      limit = cat.limit;
-      var percentLeft = (limit - total) / limit * 100;
-      if (!cat.limit || cat.limit == 0) percentLeft = 100;
-      if (percentLeft >= 25.01) css = 'green';   // in case of multiple limits for one category - an old bug.
-      if (percentLeft < 25.01) css = 'yellow'; 
-      if (percentLeft < 10.01) css = 'red';
-        //}
-      //});
-      $scope.modalCategories.push ({
-        name: cat.name,
-        currentTotal: total,
-        highlight: css,
-        limit: limit,
-        id: cat._id
-      });
-    });
-    console.log ('Pushing this final:');
-    console.log ($scope.modalCategories);
-  }
+  //     // angular.forEach ($scope.loadedCategories, function (datacat) {
+  //     //   if (datacat.name == cat) {
+  //     console.log ('    adding total:' + total);
+  //     console.log ('   Adding limit of: ' + cat.limit);
+  //     limit = cat.limit;
+  //     var percentLeft = (limit - total) / limit * 100;
+  //     if (!cat.limit || cat.limit == 0) percentLeft = 100;
+  //     if (percentLeft >= 25.01) css = 'green';   // in case of multiple limits for one category - an old bug.
+  //     if (percentLeft < 25.01) css = 'yellow'; 
+  //     if (percentLeft < 10.01) css = 'red';
+  //       //}
+  //     //});
+  //     $scope.modalCategories.push ({
+  //       name: cat.name,
+  //       currentTotal: total,
+  //       highlight: css,
+  //       limit: limit,
+  //       id: cat._id
+  //     });
+  //   });
+  // }
 
-  $scope.catNameAdd = '';
-  $scope.adding = false;
-  $scope.addSuccessMsg = '';
-  $scope.addCategory = function (e) {
-    $scope.deletePosBG = '';
-    $scope.addSuccessMsg = '';
-    $scope.closeText = 'Cancel';
-    var posx = posy = 0;
-    // Great article about mouse positioning:  http://www.quirksmode.org/js/events_properties.html 
-    if (e.pageX || e.pageY)   {
-      posx = e.pageX;
-      posy = e.pageY;
-    }
-    else if (e.clientX || e.clientY)  {
-      posx = e.clientX + document.body.scrollLeft
-        + document.documentElement.scrollLeft;
-      posy = e.clientY + document.body.scrollTop
-        + document.documentElement.scrollTop;
-    }
-    // posx and posy contain the mouse position relative to the document    
-    var modalTop = $('#categoryModal').css('top')
-    modalTop = modalTop.substring(0, modalTop.length-2);   // annoying position fix because relative to modal
-    $scope.addPos = {'z-index': 10, 'top': posy - modalTop - 100, 'display':'block'};
-    $scope.deletePosBG = {'z-index': 9, 'display':'block'};    
-  }
+  // $scope.catNameAdd = '';
+  // $scope.adding = false;
+  // $scope.addSuccessMsg = '';
+  // $scope.addCategory = function (e) {
+  //   $scope.deletePosBG = '';
+  //   $scope.addSuccessMsg = '';
+  //   $scope.closeText = 'Cancel';
+  //   var posx = posy = 0;
+  //   // Great article about mouse positioning:  http://www.quirksmode.org/js/events_properties.html 
+  //   if (e.pageX || e.pageY)   {
+  //     posx = e.pageX;
+  //     posy = e.pageY;
+  //   }
+  //   else if (e.clientX || e.clientY)  {
+  //     posx = e.clientX + document.body.scrollLeft
+  //       + document.documentElement.scrollLeft;
+  //     posy = e.clientY + document.body.scrollTop
+  //       + document.documentElement.scrollTop;
+  //   }
+  //   // posx and posy contain the mouse position relative to the document    
+  //   var modalTop = $('#categoryModal').css('top')
+  //   modalTop = modalTop.substring(0, modalTop.length-2);   // annoying position fix because relative to modal
+  //   $scope.addPos = {'z-index': 10, 'top': posy - modalTop - 100, 'display':'block'};
+  //   $scope.deletePosBG = {'z-index': 9, 'display':'block'};    
+  // }
 
-  $scope.addCategoryConfirm = function (name) {
-    if ($scope.addDupMsg.length > 0) return;
-    itemService.createCategory ($scope.key, name)
-      .then(function(data) {
-        debugger;
-        $scope.addSuccessMsg = 'Category successfully added.'
-        $scope.closeText = 'Close';
-      });
-  }
+  // $scope.addCategoryConfirm = function (name) {
+  //   if ($scope.addDupMsg.length > 0) return;
+  //   itemService.createCategory ($scope.key, name)
+  //     .then(function(data) {
+  //       debugger;
+  //       $scope.addSuccessMsg = 'Category successfully added.'
+  //       $scope.closeText = 'Close';
+  //     });
+  // }
 
-  $scope.closeCategoryPopup = function () {
-    $('#categoryModal').foundation('reveal', 'close');
-  }
+  // $scope.closeCategoryPopup = function () {
+  //   $('#categoryModal').foundation('reveal', 'close');
+  // }
 
-  $scope.checkCatDup = function (newCategory) {
-    console.log ('Checking this: ' + newCategory);
-    $scope.addDupMsg = '';
-    angular.forEach ($scope.loadedCategories, function (cat) {
-       if (cat.name == newCategory) $scope.addDupMsg = 'This category already exists, please create another.';
-    });
-  } 
+  // $scope.checkCatDup = function (newCategory) {
+  //   console.log ('Checking this: ' + newCategory);
+  //   $scope.addDupMsg = '';
+  //   angular.forEach ($scope.loadedCategories, function (cat) {
+  //      if (cat.name == newCategory) $scope.addDupMsg = 'This category already exists, please create another.';
+  //   });
+  // } 
 
   // $scope.categoryId = 0;
   // $scope.deleteErrorMsg = '';
@@ -328,7 +332,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
     //     // if error, data will contain a message about how many Items need to be updated to
     //     // another category first.
     //   });    
-  }  
+  //}  
 
   // $scope.updateCategory = function (category) {
   //   itemService.updateCategory ({
@@ -353,7 +357,7 @@ app.controller('ItemController', function($scope, itemService, keyService, $time
       total += (parseFloat(item.cost) * 100);
     });
     $scope.viewTotal = total / 100;
-    $scope.calculateAllCatTotal();
+    $scope.calculateAllCatTotal();    // keep this function in the controller
   } 
 
   $scope.addOne = function (newOne) {

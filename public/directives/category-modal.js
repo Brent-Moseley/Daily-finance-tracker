@@ -5,34 +5,77 @@ app.directive ('categoryModal', ['itemService', function (itemService) {
 
     link: function(scope, elem, attrs){
 
-      scope.categoryId = 0;
-      scope.deleteErrorMsg = '';
-      scope.deletePosBG = '';
-      scope.deleteSuccessMsg = '';
-      scope.openCatDeleteConfirm = function (id, name, e) {
-        scope.categoryId = id;
-        scope.deleteErrorMsg = '';
-        scope.deletePosBG = '';
-        scope.deleteSuccessMsg = '';
-        scope.deleteCategoryNote = name;
-        scope.closeText = 'Cancel';
+      scope.loadedCategories = [];  
+      scope.totals = [];
+      scope.openCategoryPopup = function () {
+        scope.loadingCategories = scope.recalcCategories = true;
+        var now = new Date();
+     
+        var startDate = moment([now.getFullYear(), now.getMonth() - 1]);  // remove -1
+
+        // Clone the value before .endOf()
+        var endDate = moment(startDate).endOf('month');
+
+        startDate = startDate.format('L');
+        endDate = endDate.format('L');
         
-        var posx = posy = 0;
-        if (e.pageX || e.pageY)   {
-          posx = e.pageX;
-          posy = e.pageY;
-        }
-        else if (e.clientX || e.clientY)  {
-          posx = e.clientX + document.body.scrollLeft
-            + document.documentElement.scrollLeft;
-          posy = e.clientY + document.body.scrollTop
-            + document.documentElement.scrollTop;
-        }
-        // posx and posy contain the mouse position relative to the document    
-        var modalTop = $('#categoryModal').css('top')
-        modalTop = modalTop.substring(0, modalTop.length-2);   // annoying position fix because relative to modal
-        scope.deletePos = {'z-index': 10, 'top': posy - modalTop, 'display':'block'};
-        scope.deletePosBG = {'z-index': 9, 'display':'block'};
+        scope.totals = scope.loadedCategories.reduce(function(o, v, i) {
+          o[v.name] = 0;
+          return o;
+        }, {}); 
+        // reduce down set of expense items documents to those within the current month
+        // set up category total array
+        // go through all transactions, adding costs into each totals "bucket"
+        itemService.get(scope.key, true, startDate, endDate)
+          .then(function(data) {
+            // promise fulfilled
+            if (data) {
+              scope.catItems = data;
+              console.log ('data read:');
+              console.log (data);
+
+              // Create summations for each category in totals
+              angular.forEach (data, function (item) {
+                scope.totals[item.category] += (parseFloat(item.cost) * 100);
+              });
+              angular.forEach (scope.loadedCategories, function (total) {
+                scope.totals[total.name] = scope.totals[total.name] / 100;
+              });
+              console.log ('Totals:');
+              console.log (scope.totals);
+
+              scope.recalculate();
+              if (!$('#categoryModal').hasClass('open')) $('#categoryModal').foundation('reveal', 'open');
+              scope.loadingCategories = scope.recalcCategories = false;
+            }
+          });
+      }
+
+      scope.recalculate = function () {
+        scope.modalCategories = [];
+
+        angular.forEach (scope.loadedCategories, function (cat) {
+          // Go through each default category, see if you can find current category in the object
+          // returned from the back end.  If so, push onto the array its data, otherwise,
+          // make defaults.
+          var total = scope.totals[cat.name];
+          var limit = 0;
+          var css = 'green';    // Default to green
+
+          limit = cat.limit;
+          var percentLeft = (limit - total) / limit * 100;
+          if (!cat.limit || cat.limit == 0) percentLeft = 100;
+          if (percentLeft >= 25.01) css = 'green';   // in case of multiple limits for one category - perhaps not needed anymore
+          if (percentLeft < 25.01) css = 'yellow'; 
+          if (percentLeft < 10.01) css = 'red';
+          scope.modalCategories.push ({
+            name: cat.name,
+            currentTotal: total,
+            highlight: css,
+            limit: limit,
+            id: cat._id
+          });
+        });
       }
       
       scope.updateCategory = function (category) {
@@ -52,56 +95,8 @@ app.directive ('categoryModal', ['itemService', function (itemService) {
         });
       }
 
-      scope.removeCategory = function () {
-        var id = scope.categoryId;
-        console.log ('removing category: ' + id + ' ' + scope.deleteItemNote);
-
-        itemService.deleteCat (id, scope.key)
-          .then(function(data) {
-            if (data > 0) {
-              scope.deleteErrorMsg = data.toString() + ' items are assigned to this category. ';
-              scope.deleteErrorMsg += 'Please re-assign those items before deleting this category.';
-              scope.closeText = 'Close';
-            }
-            else {
-              scope.deleteSuccessMsg = 'Category successfully deleted.'
-              scope.closeText = 'Close';
-            }
-          });      
-
-      scope.calculateCatTotal = function (selectedCat) {
-        var total = 0;
-        angular.forEach (scope.items, function (item) {
-          if (item.category == selectedCat) total += (parseFloat(item.cost) * 100);
-        });
-        scope.catTotal = total / 100;
-      }
-
-      scope.calculateAllCatTotal = function () {
-        itemService.getCategories (scope.key)
-          .then (function (dataCat) {
-            scope.loadedCategories = dataCat;
-          });
-      }
-
-      scope.closeCatAddPopup = function () {
-        scope.addPos = {'display':'none'};
-        scope.deletePosBG = {'display':'none'};
-        itemService.getCategories (scope.key)
-          .then (function (dataCat) {
-            scope.loadedCategories = dataCat;
-            scope.openCategoryPopup();
-          });    
-      }  
-
-      scope.closeCatDeletePopup = function () {
-        scope.deletePos = {'display':'none'};
-        scope.deletePosBG = {'display':'none'};
-        itemService.getCategories (scope.key)
-          .then (function (dataCat) {
-            scope.loadedCategories = dataCat;
-            scope.openCategoryPopup();
-          });
+      scope.closeCategoryPopup = function () {
+        $('#categoryModal').foundation('reveal', 'close');
       }      
 
     }  
