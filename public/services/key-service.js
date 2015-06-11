@@ -60,8 +60,24 @@ app.factory('keyService', ['$http', '$q', function($http, $q) {
           });      
     },    
 
+    createAllCategories : function (key) {
+      var categories = ['Auto', 'Bills', 'Career', 'Clothes', 'Dates', 'Debt', 'Education', 'Fun', 'Gas', 'Giving','Grocery', 'Home', 'Insurance', 'Medical', 'Mortgage', 'Misc', 'Phone', 'Rent', 'Restaurant','Savings', 'Training', 'Utilities' ];
+      angular.forEach (categories, function (cat) {
+        var data = JSON.stringify ({'name': cat, 'limit': 0});
+        $http({
+          method: 'POST',
+          url: '/api/categories',
+          data: data,
+          headers: {'key': key}
+        });  // Not waiting on a response, just hitting all posts at once.... 
+      });
+
+    },
+
     createAccount : function (userName, userPwd, key, callback) {
       console.log ('in user create: ' + userName);
+      var keySave = key;
+      var createCategories = this.createAllCategories;
       var data = JSON.stringify ({
         'userName': userName, 
         'pwd': userPwd,
@@ -74,6 +90,7 @@ app.factory('keyService', ['$http', '$q', function($http, $q) {
       })
         .then(function(response) {
           if (typeof response.data != undefined) {
+            createCategories (keySave);
             callback(response.data);
           } else {
             // invalid response

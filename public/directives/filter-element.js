@@ -9,7 +9,6 @@ app.directive('filterElement', ['$filter', function($filter){
   return {
     restrict:'A',
     require: '?ngModel',
-    //scope: {},
 
     link: function( scope, elem, attrs, ngModel ){
       if(!ngModel) return;

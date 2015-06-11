@@ -1,12 +1,12 @@
 <!-- public/views/home.html -->
-<!--   Foundation grid layout:  http://foundation.zurb.com/grid-2.html
- --><div>
+  <div>
     <h1>Daily Financial Tracker Login Page</h1>
 
     <p>
       A no-charge tool for tracking your daily finances, setting budget limits, and generating reports.<br>
       {{ tagline }}<br>
-      NOTE: landscape mode is recommended when viewing this site on mobile.
+      NOTE: landscape mode is recommended when viewing this site on mobile. For this current release, Chrome,
+      Firefox or Safari are recommended for browsers.
     </p>
 
     <div class="row">
@@ -22,7 +22,6 @@
       </div>
     </div>      
 
-    <!-- For larger devices.  Create a different div for small devices below -->
     <div class="row">
       <div class="small-10 medium-10 large-10 columns">
         <div class="row">
@@ -48,6 +47,9 @@
           <div class="small-0 medium-4 large-4 columns">
           </div>  
         </div> 
+        <!-- Use the controller action below to create all categories for an old user, must enter in the key above the button. This is a patch. 
+        <input type="text" ng-model="tempKey" style="width: 12rem;" />
+        <a ng-click="createCategories(tempKey);"class="button postfix">Fix Categories</a>  -->
 
         NOTE: When you create a new account, you will be prompted to create a user ID and a password for yourself.  User ID and password must be at least 6 characters each, using at least one number or special character in your password is recommended.
       </div>
@@ -62,46 +64,11 @@
       </div>
     </div>
 
-  <!-- ACCOUNT CREATION POPUP, MAKE INTO DIRECTIVE LATER -->
-  <div id="myModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-    <h3 id="modalTitle">Create a new account</h3>
-    <p><input type="text" ng-model="userName" class="modal-input"/>New User Name (minimum 6 characters)</p>
-    <p>
-      <input type="password" ng-model="userPwd" class="modal-input"/>New User Password (minimum 6 characters)
-      <input type="password" ng-model="userPwdConfirm" class="modal-input"/>Confirm
-    </p>
-    <div ng-show="userPwdConfirm.length > 0 && userPwd != userPwdConfirm" style="color: red;">Password and confirm must match</div>
-    <div ng-show="lengthError" style="color: red;">User Name and Password must each be 6 characters or more.</div>
-    <div ng-show="duplicateError" style="color: red;">User Name is already in use, please try another.</div>    
-    <p><a ng-disabled="!pass()" ng-click="confirmAccount();"class="button postfix" style="width: 10rem;">Create Account</a></p>
-
-    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
-  </div>
+  <!-- ACCOUNT CREATION POPUP -->
+  <account-creation-modal></account-creation-modal>
 
   <!-- PASSWORD UPDATE POPUP -->
-  <div id="pwd-update-modal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-    <h3 id="modalTitle">Update your Password</h3>
-    <p><input type="text" ng-model="userName" class="modal-input"/>User Name</p>
-    <p>
-      <input type="password" ng-model="userPwd" class="modal-input"/>Current Password    
-    <p>
-      <input type="password" ng-model="newPwd" class="modal-input"/>New Password (minimum 6 characters)
-      <input type="password" ng-model="newPwdConfirm" class="modal-input"/>Confirm
-    </p>
-    <div ng-show="newPwdConfirm.length > 0 && newPwd != newPwdConfirm" style="color: red;">New password and confirm must match</div>
-    <div ng-show="lengthError" style="color: red;">New Password must each be 6 characters or more.</div>
-    <div ng-show="updateError" style="color: red;">Your account could not be updated, please try again later.
-    </div>    
-    <p><a ng-disabled="!passPwdUpdate()" ng-click="confirmPwdChange();"class="button postfix" style="width: 10rem;">Update Password</a></p>
-
-    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
-  </div>  
+  <account-update-modal></account-update-modal>
 
 </div>
 
-<!-- 
-tan
-BurlyWood 
-
-Just focus and get in the zone!! 
-Speed, 60% of the time -->

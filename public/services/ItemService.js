@@ -1,9 +1,5 @@
 // public/js/services/ItemService.js
 app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
-    // the $q service gives you promises in an Angular app:  
-    //   https://docs.angularjs.org/api/ng/service/$q
-    //   Promises are just another way to do callbacks, via chaining.
-    //
     return {
       getCategories: function (key) {
         return $http({
@@ -25,16 +21,32 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
             });
       },
 
-      updateCategory: function (data, key, callback) {
-        //debugger;
+      createCategory : function (key, name) {
+        var data = JSON.stringify ({'name': name, 'limit': 0});
+        return $http({
+          method: 'POST',
+          url: '/api/categories',
+          data: data,
+          headers: {'key': key}
+        })
+          .then(function(response) {
+            if (typeof response.data != undefined) {
+              return(response.data);
+            } else {
+              // invalid response
+              return $q.reject(response.data);
+            }
+
+            }, function(response) {
+              // something went wrong
+              return $q.reject(response.data);
+            });        
+      },      
+
+      updateCategory: function (data, key) {
         if (data._id == 0) {
           // new Category record
-          console.log ('in create category for: ' + key);
-          console.log (data);
           var saveDate = data;
-          // Note this is only creating a new item with today's date and the amount,
-          //  will then be updated in real time when the user changes
-          //  drop down options, adds a note, etc. 
           var payload = {'name': data.name, 'limit': data.limit, 'key': key};
           return $http({
             method: 'POST',
@@ -44,7 +56,6 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
           })
             .then(function(response) {
             if (typeof response === 'object') {
-              //debugger;
               console.log ('Successful new category, new id: ' + response.data);
               return response.data;
             } else {
@@ -55,13 +66,8 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
         }
         else {
           // update existing Category record
-         console.log (' in category update:');
-          // the data that comes in is a modification of the original
-          // item object that was loaded.  Delete what should not be sent
-          // to the back end.
           var payload = JSON.stringify ({'name': data.name, 'limit': data.limit, 'key': key});
 
-          console.log (data);
           // Putting user key in the header
           // is not necessary here since we are updating by ID
           return $http({
@@ -106,8 +112,6 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
 
         // call to POST and create a new item
         create : function(itemData, expenseDate, key) {
-          console.log ('in create: ' + key);
-          console.log (expenseDate);
           // Note this is only creating a new item with today's date and the amount,
           //  will then be updated in real time when the user changes
           //  drop down options, adds a note, etc. 
@@ -122,12 +126,8 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
 
         // call to UPDATE an item
         update : function(id, data, key) {
-          console.log (' in service update:');
-          // the data that comes in is a modification of the original
-          // item object that was loaded.  Delete what should not be sent
-          // to the back end. 
           delete data['_id']; 
-          delete data['__v'];   // This is like row version
+          delete data['__v'];
           delete data['$$hashKey'];
           console.log (data);
           // Putting user key in the header
@@ -140,9 +140,8 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
             },
             headers: {'Content-Type':'application/json', 'key': key}
           }).success(function (data, status, headers, config) {
-            console.log ('Successful Update:');
           }).error(function (data, status, headers, config) {
-            console.log('Update failed');
+            console.log('Update of item failed');
             console.log ('  Status:');
             console.log(status);
             console.log ('  Headers:');
@@ -158,11 +157,19 @@ app.factory('itemService', ['$http', '$filter', function($http, $filter, $q) {
             method: "DELETE",
             headers: {'key': key}
           });
-        }
+        },
+
+        // call to DELETE a category
+        deleteCat : function(id, key) {
+          return $http({
+            url: '/api/categories/&id=' + id,
+            method: "DELETE",
+            headers: {'key': key}
+          })
+          .then(function(response) {
+            var numLeft = parseInt(response.data);
+            return numLeft;
+          });         
+        }       
     }       
 }]);
-
-
-// ******** Notes *********
-// Mongoose queries:  http://adrianmejia.com/blog/2014/10/01/creating-a-restful-api-tutorial-with-nodejs-and-mongodb/
-// http://stackoverflow.com/questions/4024271/rest-api-best-practices-where-to-put-parameters

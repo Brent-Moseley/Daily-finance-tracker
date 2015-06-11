@@ -1,0 +1,38 @@
+<div id="categoryModal" class="reveal-modal medium" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+  <h3 id="modalTitle">Categories</h3>
+  Shows your totals for the current month in each category, and is color coded to show how close you are to your budget limit.
+  <table>
+    <th width="120">Category Name</th>
+    <th width="100">Monthly Limit</th> 
+    <th width="100">Current Month Total</th>
+    <th width="50" class="hide-for-small">Remove</th>
+    <tr ng-repeat="category in modalCategories track by $index">
+      <td>
+        {{category.name}}
+      </td>
+      <td>
+        <input type="text" ng-model="category.limit" filter-element="numberCurrency" class="line-input" ng-blur="updateCategory(category)"/>
+      </td>
+      <td ng-class="category.highlight">
+        {{category.currentTotal | currency}}
+      </td>
+      <td class="text-center hide-for-small"><a href="" ng-click="openCatDeleteConfirm(category.id, category.name, $event)">X</a></td>
+    </tr>
+  </table>
+ 
+  <p>
+    <div class="row">
+      <div class="small-2 medium-3 large-3 columns">
+        <a ng-show="!recalcCategories" ng-click="addCategory($event);"class="button postfix" style="width: 7rem;">Add</a>
+        <img ng-show="recalcCategories" src="images/loading-1.gif" />
+      </div>
+      <div class="small-2 medium-3 large-3 columns">
+        <a ng-click="closeCategoryPopup();"class="button postfix" style="width: 7rem;">Close</a>
+      </div>
+      <div class="small-8 medium-6 large-6 columns">
+      </div>        
+    </div>
+  </p>
+
+  <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+</div>

@@ -1,5 +1,4 @@
 <!-- public/views/item.html -->
-<!-- Foundation Cheat Sheet:  https://princessdesign.net/foundation-cheat-sheet/ -->
 
 <div class="panel content large-8 medium-10 small-12 small-centered large-centered radius" 
      style="padding: 0.75rem;">
@@ -38,8 +37,8 @@
       </div>
     </div>
   </div>
+  <img ng-show="mainTableLoading" src="images/loading-1.gif" />
   <table>
-    <!-- Table for larger devices, create a smaller one for small devices that omits remove and notes -->
     <thead>
       <tr>
         <th width="120" class="hand-clickable" ng-click="columnSort('date');">Date</th>
@@ -51,16 +50,14 @@
     </thead>
     <tbody>
       <tr ng-repeat="item in items track by $index">
-        <!-- <td>{{item.date}}</td> -->
         <td>
           <input class="calendar" type="text" ng-model="item.date" ui-date="dateOptions" grid="true"/> 
         </td>
         <td>
           <select ng-model="item.category" ng-change="update(item._id, item)">
-            <option ng-repeat="option in categories">{{option}}</option>
+            <option ng-repeat="option in loadedCategories">{{option.name}}</option>
           </select>
         </td>
-        <!-- <td>{{item.cost}}</td> -->
          <td>
           <input type="text" ng-model="item.cost" filter-element="numberCurrency" ng-change="updateNote(item._id, $index, true)" class="line-input">
         </td>     
@@ -68,7 +65,8 @@
           <input type="text" ng-model="item.note" ng-change="updateNote(item._id, $index, false)" class="line-input">
         </td>
 
-        <td class="text-center hide-for-small"><a href="" ng-click="requestedDelete(item.note, item._id)">X</a></td>
+        <td class="text-center hide-for-small"><a href="" ng-click="requestedDelete(item.note, item._id)">X</a>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -103,7 +101,7 @@
     </div>
     <div class="small-5 medium-3 large-3 columns">
       <select ng-model="selectedCat" ng-change="calculateCatTotal(selectedCat)">
-        <option ng-repeat="option in categories">{{option}}</option>
+        <option ng-repeat="option in loadedCategories">{{option.name}}</option>
       </select>
     </div>
     <div class="small-1 medium-2 large-2 columns">
@@ -115,63 +113,17 @@
     </div>       
   </div>             
 
-  <!-- DELETE CONFIRMATION POPUP, MAKE INTO DIRECTIVE LATER -->
-  <div id="deleteModal" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-    <h3 id="modalTitle">Confirm Delete:</h3>
-    Are you sure you want to delete this expense? {{deleteItemNote}}
-     <p>
-      <div class="row">
-        <div class="small-4 medium-4 large-4 columns">
-          <a ng-click="closeDeletePopup();"class="button postfix" style="width: 7rem;">Cancel</a>
-        </div>
-        <div class="small-4 medium-4 large-4 columns">
-        </div>        
-        <div class="small-4 medium-4 large-4 columns">
-          <a ng-show="!deleting" ng-click="confirmedDelete();"class="button postfix" style="width: 7rem;">Delete</a>
-          <img ng-show="deleting" src="images/loading-1.gif" />
-        </div>     
-      </div>
-    </p> 
-  </div>  
-
+  <!-- DELETE CONFIRMATION POPUP -->
+  <expense-delete-modal></expense-delete-modal>
 
   <!-- CATEGORY POPUP, MAKE INTO DIRECTIVE LATER -->
-  <div id="categoryModal" class="reveal-modal medium" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-    <h3 id="modalTitle">Categories</h3>
-    Shows your totals for the current month in each category, and is color coded to show how close you are to your budget limit.
-    <table>
-      <th width="120">Category Name</th>
-      <th width="100">Monthly Limit</th> 
-      <th width="100">Current Month Total</th>
-      <!-- <th width="50">Remove</th> -->
-      <tr ng-repeat="category in modalCategories track by $index">
-        <!-- <td>{{item.date}}</td> -->
-        <td>
-          {{category.name}}
-        </td>
-        <td>
-          <input type="text" ng-model="category.limit" filter-element="numberCurrency" class="line-input" ng-blur="updateCategory(category)"/>
-        </td>
-        <td ng-class="category.highlight">
-          {{category.currentTotal | currency}}
-        </td>
-<!--         <td class="text-center"><a href="" ng-click="remove(item._id)">X</a></td>
- -->  </tr>
-    </table>
-   
-    <p>
-      <div class="row">
-        <div class="small-2 medium-3 large-3 columns">
-          <a ng-show="!recalcCategories" ng-click="openCategoryPopup();"class="button postfix" style="width: 7rem;">Re-calculate</a>
-          <img ng-show="recalcCategories" src="images/loading-1.gif" />
-        </div>
-        <div class="small-2 medium-3 large-3 columns">
-          <a ng-click="closeCategoryPopup();"class="button postfix" style="width: 7rem;">Close</a>
-        </div>
-        <div class="small-8 medium-6 large-6 columns">
-        </div>        
-      </div>
-    </p>
+  <category-modal></category-modal>
 
-    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
-  </div></div>
+   <!-- DELETE CONFIRMATION POPUP -->
+   <category-delete-modal></category-delete-modal>
+
+   <!-- ADD CONFIRMATION POPUP -->
+   <category-add-modal></category-add-modal> 
+   <div id="my-modal-bg" ng-style="deletePosBG"></div>
+  
+ </div>

@@ -1,5 +1,9 @@
 // Run this file from the test folder:   mocha test.js
 
+// NOTE:  Uncompleted test suite!!!
+// TODO:  Basic test setup from 2D Task List template project,
+//  creates tests for this project in the near future.
+
 var assert = require("assert");   // Mocha assertion library
 var expect = require('chai').expect;
 var assert = require('chai').assert;
@@ -56,7 +60,3 @@ describe('User', function(){
     // No cleanup stuff to do here yet.
   });  
 })
-
-
-//   http://chaijs.com/guide/styles/#expect
-
