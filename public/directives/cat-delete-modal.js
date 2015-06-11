@@ -44,10 +44,12 @@ app.directive ('categoryDeleteModal', ['itemService', function (itemService) {
               scope.deleteErrorMsg = data.toString() + ' items are assigned to this category. ';
               scope.deleteErrorMsg += 'Please re-assign those items before deleting this category.';
               scope.closeText = 'Close';
+              scope.deleting = false;
             }
             else {
               scope.deleteSuccessMsg = 'Category successfully deleted.'
               scope.closeText = 'Close';
+              scope.deleting = false;
             }
           });  
         }    

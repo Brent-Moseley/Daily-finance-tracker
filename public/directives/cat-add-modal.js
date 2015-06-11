@@ -44,6 +44,7 @@ app.directive ('categoryAddModal', ['itemService', function (itemService) {
           .then(function(data) {
             scope.addSuccessMsg = 'Category successfully added.'
             scope.closeText = 'Close';
+            scope.adding = false;
           });
       }
 
