@@ -14,6 +14,7 @@ app.directive ('categoryDeleteModal', ['itemService', function (itemService) {
         scope.deleteErrorMsg = '';
         scope.deletePosBG = '';
         scope.deleteSuccessMsg = '';
+        scope.deleting = false;
         scope.deleteCategoryNote = name;
         scope.closeText = 'Cancel';
         
@@ -28,17 +29,15 @@ app.directive ('categoryDeleteModal', ['itemService', function (itemService) {
           posy = e.clientY + document.body.scrollTop
             + document.documentElement.scrollTop;
         }
-        // posx and posy contain the mouse position relative to the document    
-        var modalTop = $('#categoryModal').css('top')
-        modalTop = modalTop.substring(0, modalTop.length-2);   // annoying position fix because relative to modal
-        scope.deletePos = {'z-index': 10, 'top': posy - modalTop, 'display':'block'};
-        scope.deletePosBG = {'z-index': 9, 'display':'block'};
+        scope.deletePos = {'z-index': 1007, 'top': posy - 30, 'display':'block'};
+        scope.deletePosBG = {'z-index': 1006, 'display':'block'};
       }
       
       scope.removeCategory = function () {
         var id = scope.categoryId;
         console.log ('removing category: ' + id + ' ' + scope.deleteItemNote);
-
+        
+        scope.deleting = true;
         itemService.deleteCat (id, scope.key)
           .then(function(data) {
             if (data > 0) {

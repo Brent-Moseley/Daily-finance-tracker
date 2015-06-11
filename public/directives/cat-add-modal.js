@@ -1,5 +1,4 @@
 app.directive ('categoryAddModal', ['itemService', function (itemService) {
-  debugger;
   return {
     restrict: 'E',
     templateUrl:'/directives/partials/cat-add-modal.html',
@@ -12,7 +11,10 @@ app.directive ('categoryAddModal', ['itemService', function (itemService) {
       scope.addCategory = function (e) {
         scope.deletePosBG = '';
         scope.addSuccessMsg = '';
+        scope.adding = false;
         scope.closeText = 'Cancel';
+        scope.newCategory = '';
+        scope.addDupMsg = '';
         var posx = posy = 0;
         if (e.pageX || e.pageY)   {
           posx = e.pageX;
@@ -24,11 +26,8 @@ app.directive ('categoryAddModal', ['itemService', function (itemService) {
           posy = e.clientY + document.body.scrollTop
             + document.documentElement.scrollTop;
         }
-        // posx and posy contain the mouse position relative to the document    
-        var modalTop = $('#categoryModal').css('top')
-        modalTop = modalTop.substring(0, modalTop.length-2);   // position fix because relative to modal
-        scope.addPos = {'z-index': 10, 'top': posy - modalTop - 100, 'display':'block'};
-        scope.deletePosBG = {'z-index': 9, 'display':'block'};    
+        scope.addPos = {'z-index': 10007, 'top': posy - 200, 'display':'block'};
+        scope.deletePosBG = {'z-index': 1006, 'display':'block'};    
       }
 
       scope.checkCatDup = function (newCategory) {
@@ -40,6 +39,7 @@ app.directive ('categoryAddModal', ['itemService', function (itemService) {
 
       scope.addCategoryConfirm = function (name) {
         if (scope.addDupMsg.length > 0) return;
+        scope.adding = true;
         itemService.createCategory (scope.key, name)
           .then(function(data) {
             scope.addSuccessMsg = 'Category successfully added.'
@@ -56,7 +56,6 @@ app.directive ('categoryAddModal', ['itemService', function (itemService) {
             scope.openCategoryPopup();
           });    
       }  
-      debugger;
     }  
 }
 }]);

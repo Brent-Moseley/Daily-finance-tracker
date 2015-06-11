@@ -11,7 +11,7 @@ app.directive ('categoryModal', ['itemService', function (itemService) {
         scope.loadingCategories = scope.recalcCategories = true;
         var now = new Date();
      
-        var startDate = moment([now.getFullYear(), now.getMonth() - 1]);  // remove -1
+        var startDate = moment([now.getFullYear(), now.getMonth()]);  // ***
 
         // Clone the value before .endOf()
         var endDate = moment(startDate).endOf('month');
@@ -28,11 +28,8 @@ app.directive ('categoryModal', ['itemService', function (itemService) {
         // go through all transactions, adding costs into each totals "bucket"
         itemService.get(scope.key, true, startDate, endDate)
           .then(function(data) {
-            // promise fulfilled
             if (data) {
               scope.catItems = data;
-              console.log ('data read:');
-              console.log (data);
 
               // Create summations for each category in totals
               angular.forEach (data, function (item) {
@@ -41,8 +38,6 @@ app.directive ('categoryModal', ['itemService', function (itemService) {
               angular.forEach (scope.loadedCategories, function (total) {
                 scope.totals[total.name] = scope.totals[total.name] / 100;
               });
-              console.log ('Totals:');
-              console.log (scope.totals);
 
               scope.recalculate();
               if (!$('#categoryModal').hasClass('open')) $('#categoryModal').foundation('reveal', 'open');

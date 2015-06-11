@@ -90,9 +90,6 @@ app.factory('keyService', ['$http', '$q', function($http, $q) {
       })
         .then(function(response) {
           if (typeof response.data != undefined) {
-          // TODO
-          // Create set of categories for new user.
-            
             createCategories (keySave);
             callback(response.data);
           } else {
