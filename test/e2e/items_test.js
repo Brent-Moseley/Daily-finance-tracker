@@ -1,4 +1,5 @@
 // e2e/items_test.js
+// OLD, REMOVE THIS
 
 var helpers = require('../test-helper');
 var expect = helpers.expect;

@@ -2,7 +2,7 @@
 
 var helpers = require('../../test-helper');
 
-function ItemsPage() {    // Simulate a class, a test page
+function ItemsPage() {    // Simulate a class for a test page, you can call new on this and this is the object constructor then.
   this.get = function() {  // Class member get
     browser.get(helpers.rootUrl + '/items');
   }
@@ -18,6 +18,13 @@ function ItemsPage() {    // Simulate a class, a test page
   this.itemCreateNameField = element(by.model('newOne'));  // get element by ng-model
   //this.itemCreateSubmit = this.widgetCreateForm.element(by.buttonText('Create');
 }
+
+//   by.binding('name').first().getText().then(function(text) {});    getText returns a promise
+//   can do click() on elements
+//   browser.get
+//   browser.waitForAngular();    helpful after a simulated user interaction click()
+//   Jasmine will wait if you pass it a promise, so can do expect(header.getText())
+//   chai-as-promised will use to.eventually to wait for promises to resolve
 
 module.exports = ItemsPage;
 

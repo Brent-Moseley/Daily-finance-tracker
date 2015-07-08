@@ -29,3 +29,7 @@ module.exports = {
   rootUrl: 'http://localhost:8080/#',
   expect: chai.expect
 };
+
+
+
+// https://strongloop.com/strongblog/how-to-test-an-api-with-node-js/

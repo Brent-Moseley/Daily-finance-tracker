@@ -1,6 +1,6 @@
 // Run this file from the test folder:   mocha test.js
 
-// NOTE:  Uncompleted test suite!!!
+// NOTE:  Partial test suite!!!
 // TODO:  Basic test setup from 2D Task List template project,
 //  creates tests for this project in the near future.
 
@@ -90,15 +90,27 @@ describe('Category', function(){
     expect(category).to.have.property('name').to.be.a('string');
   }) 
   it('should have a Category object with a limit property of type string and defaulting to -1', function(){
-    console.log (category)
     expect(category).to.have.property('limit').to.be.a('number').to.equal(-1);
   }) 
   it('should have a Category object with a key property of type string', function(){
     expect(category).to.have.property('key').to.be.a('string');
   })
-  // Use that fire and frustration for determination and drive!! 
 })
 
+
 //  https://visualstudiomagazine.com/articles/2009/09/01/eliminate-database-dependencies-in-test-driven-development.aspx
-//  Just want to test the logic and funcationality of the backend operations, not the data reading
-//  itself.  Perhaps can do a mock of the model / api objects and use that to test the logic. itself.
+
+//  Future expansion of tests:  use sinon to create mocks of server calls to the api to do things
+//  such as create users, login users, add new items, read them back, create categories, etc. 
+//  Need test cases for all the conditions the code should handle, such as invalid password, 
+//  trying to create a user that already exists, logging in successfully, change a user password,
+//  etc.  Mock the server responses to make sure the logic works correctly and does not  
+//  break in the future.  
+//  Right now, writing tests for end to end functionality in the UI for creating new users,
+//  logging in, creating new items, updating, deleting, adding categories, etc.  
+//  Using Mocha, Chai, Chai as Promised, Protractor.
+
+//  Test http calls to api using mocks:
+// https://www.airpair.com/javascript/posts/unit-testing-ajax-requests-with-mocha
+// http://codeutopia.net/blog/2015/01/30/how-to-unit-test-nodejs-http-requests/
+// https://davidbeath.com/posts/testing-http-responses-in-nodejs.html
