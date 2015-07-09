@@ -25,6 +25,7 @@ function ItemsPage() {    // Simulate a class for a test page, you can call new 
 //   browser.waitForAngular();    helpful after a simulated user interaction click()
 //   Jasmine will wait if you pass it a promise, so can do expect(header.getText())
 //   chai-as-promised will use to.eventually to wait for promises to resolve
+// 
 
 module.exports = ItemsPage;
 
