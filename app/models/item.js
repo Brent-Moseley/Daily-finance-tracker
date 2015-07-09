@@ -3,8 +3,10 @@
 var mongoose = require('mongoose');
 console.log (' Connecting to DB....'); 
 
+mongoose.connect('mongodb://localhost/daily-financial-tracker');  // NOTE:  for tdd testing purposes.
+
 // PROD DB URL:
-mongoose.connect('mongodb://root:root@proximus.modulusmongo.net:27017/exIbeb2e');   // PROD, Do mask for github public repo
+//mongoose.connect('mongodb://root:root@proximus.modulusmongo.net:27017/exIbeb2e');   // PROD, Do mask for github public repo
 
 // define the Item model
 console.log (' Defining Item model....');
