@@ -9,13 +9,13 @@ function UserPage() {    // Simulate a class for a test page, you can call new o
 
   // Protractor grab all the necessary page elements for creating and then logging in as a user.
   //  https://github.com/angular/protractor/blob/master/docs/locators.md
+  console.log (' Constructor for UserPage');
   this.agreeBox = element(by.model('agree'));
   this.userName = element(by.model('userName'));
   this.userPwd = element(by.model('pwd'));
-  this.userPwdPopup = element(by.model('userPwd'));
-  this.userPwdConfirm = element(by.model('userPwdConfirm'));
-  this.createAccount = $('a:contains(Create)')[0];
-  this.logIn = $('a:contains(Log In)')[0]
+
+  this.createAccount = element(by.cssContainingText('.button', 'Create'));
+  this.logIn = element(by.linkText('Log'));
 
 
 
